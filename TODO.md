@@ -1,15 +1,15 @@
 # TODO
 
 ## Project Setup
-- [ ] Add iOS platform support to Package.swift (iOS 17.0+)
-- [ ] Import PencilKit framework
+- [x] Add iOS platform support to Package.swift (iOS 17.0+)
+- [x] Import PencilKit framework
 
 ## Core Components
-- [ ] Create Canvas class (ObservableObject for state management)
-- [ ] Create CanvasConfiguration class (immutable settings)
-- [ ] Create CanvasView (UIViewRepresentable wrapper)
-- [ ] Create CanvasCoordinator (UIKit-SwiftUI bridge)
-- [ ] Create CanvasDelegate protocol
+- [x] Create Canvas class (ObservableObject for state management)
+- [x] Create CanvasConfiguration class (immutable settings)
+- [x] Create CanvasView (UIViewRepresentable wrapper)
+- [x] Create CanvasCoordinator (UIKit-SwiftUI bridge)
+- [x] Create CanvasDelegate protocol
 
 ## Drawing Tools
 - [ ] Define DrawingTool enum

@@ -1,0 +1,86 @@
+import UIKit
+import PencilKit
+
+@MainActor
+public class CanvasCoordinator: NSObject {
+    weak var canvas: Canvas?
+    weak var delegate: CanvasDelegate?
+    private var lastContentOffset: CGPoint = .zero
+    private var lastZoomScale: CGFloat = 1.0
+    
+    init(delegate: CanvasDelegate?) {
+        self.delegate = delegate
+        super.init()
+    }
+    
+    func showToolPicker(for canvasView: PKCanvasView) {
+        guard canvas?.toolPicker == nil else { return }
+        
+        let toolPicker = PKToolPicker()
+        toolPicker.setVisible(true, forFirstResponder: canvasView)
+        toolPicker.addObserver(canvasView)
+        toolPicker.addObserver(self)
+        canvasView.becomeFirstResponder()
+        
+        canvas?.toolPicker = toolPicker
+    }
+    
+    func hideToolPicker() {
+        guard let toolPicker = canvas?.toolPicker,
+              let canvasView = canvas?.canvasView else { return }
+        
+        toolPicker.setVisible(false, forFirstResponder: canvasView)
+        toolPicker.removeObserver(canvasView)
+        toolPicker.removeObserver(self)
+        
+        canvas?.toolPicker = nil
+    }
+}
+
+extension CanvasCoordinator: PKCanvasViewDelegate {
+    public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
+        canvas?.updateUndoRedoState()
+        delegate?.canvasDrawingDidChange(canvas!)
+    }
+    
+    public func canvasViewDidBeginUsingTool(_ canvasView: PKCanvasView) {
+        delegate?.canvasDidBeginDrawing(canvas!)
+    }
+    
+    public func canvasViewDidEndUsingTool(_ canvasView: PKCanvasView) {
+        delegate?.canvasDidEndDrawing(canvas!)
+    }
+    
+    public func canvasViewDidZoom(_ canvasView: PKCanvasView) {
+        let newZoomScale = canvasView.zoomScale
+        if abs(newZoomScale - lastZoomScale) > 0.01 {
+            lastZoomScale = newZoomScale
+            delegate?.canvas(canvas!, didZoomTo: newZoomScale)
+        }
+    }
+    
+    public func canvasViewDidScroll(_ canvasView: PKCanvasView) {
+        let newOffset = canvasView.contentOffset
+        if !newOffset.equalTo(lastContentOffset) {
+            lastContentOffset = newOffset
+            delegate?.canvas(canvas!, didScrollTo: newOffset)
+        }
+    }
+}
+
+extension CanvasCoordinator: PKToolPickerObserver {
+    public func toolPickerSelectedToolDidChange(_ toolPicker: PKToolPicker) {
+        canvas?.currentTool = toolPicker.selectedTool
+        canvas?.canvasView?.tool = toolPicker.selectedTool
+    }
+    
+    public func toolPickerIsRulerActiveDidChange(_ toolPicker: PKToolPicker) {
+        canvas?.canvasView?.isRulerActive = toolPicker.isRulerActive
+    }
+    
+    public func toolPickerVisibilityDidChange(_ toolPicker: PKToolPicker) {
+    }
+    
+    public func toolPickerFramesObscuredDidChange(_ toolPicker: PKToolPicker) {
+    }
+}
