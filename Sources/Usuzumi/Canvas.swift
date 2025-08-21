@@ -62,6 +62,10 @@ public class Canvas: ObservableObject {
         canRedo = canvasView?.undoManager?.canRedo ?? false
     }
     
+    internal func setDrawingState(_ isDrawing: Bool) {
+        self.isDrawing = isDrawing
+    }
+    
     internal func setupCanvasView(_ canvasView: PKCanvasView) {
         self.canvasView = canvasView
         canvasView.drawing = drawing

@@ -44,10 +44,12 @@ extension CanvasCoordinator: PKCanvasViewDelegate {
     }
     
     public func canvasViewDidBeginUsingTool(_ canvasView: PKCanvasView) {
+        canvas?.setDrawingState(true)
         delegate?.canvasDidBeginDrawing(canvas!)
     }
     
     public func canvasViewDidEndUsingTool(_ canvasView: PKCanvasView) {
+        canvas?.setDrawingState(false)
         delegate?.canvasDidEndDrawing(canvas!)
     }
     
