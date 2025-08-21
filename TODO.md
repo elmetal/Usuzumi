@@ -13,13 +13,14 @@
 
 ## Drawing Tools
 - [ ] Define DrawingTool enum
-- [ ] Integrate PKToolPicker
-- [ ] Implement tool selection sync
+- [x] Integrate PKToolPicker
+- [x] Implement tool selection sync
 
 ## Data Management
-- [ ] Implement drawing import/export
-- [ ] Add undo/redo functionality
-- [ ] Support image/PDF export
+- [x] Implement drawing import/export (via drawingData property)
+- [x] Add undo/redo functionality
+- [x] Support image export (via exportAsImage)
+- [ ] Support PDF export
 
 ## Advanced Features
 - [ ] Add gesture recognition support
@@ -27,11 +28,11 @@
 - [ ] Add shape recognition
 
 ## Testing
-- [ ] Write unit tests for CanvasBoard state
-- [ ] Write integration tests for SwiftUI
-- [ ] Add example app
+- [x] Write unit tests for CanvasBoard state
+- [x] Write integration tests for SwiftUI
+- [x] Add example app (in Usuzumi.swift)
 
 ## Documentation
 - [ ] Write API documentation
-- [ ] Add usage examples
+- [x] Add usage examples (in Usuzumi.swift)
 - [ ] Create README with quick start guide
