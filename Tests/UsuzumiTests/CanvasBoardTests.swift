@@ -3,13 +3,13 @@ import SwiftUI
 import PencilKit
 @testable import Usuzumi
 
-@Suite("Canvas Tests")
-struct CanvasTests {
+@Suite("CanvasBoard Tests")
+struct CanvasBoardTests {
     
-    @Test("Canvas initializes with default values")
+    @Test("CanvasBoard initializes with default values")
     @MainActor
-    func testCanvasInitialization() {
-        let canvas = Canvas()
+    func testCanvasBoardInitialization() {
+        let canvas = CanvasBoard()
         
         #expect(canvas.isDrawing == false)
         #expect(canvas.canUndo == false)
@@ -17,10 +17,10 @@ struct CanvasTests {
         #expect(canvas.currentTool is PKInkingTool)
     }
     
-    @Test("Canvas clear functionality")
+    @Test("CanvasBoard clear functionality")
     @MainActor
-    func testCanvasClear() {
-        let canvas = Canvas()
+    func testCanvasBoardClear() {
+        let canvas = CanvasBoard()
         
         canvas.clear()
         
@@ -30,10 +30,10 @@ struct CanvasTests {
         #expect(canvas.canRedo == false)
     }
     
-    @Test("Canvas drawing data setter and getter")
+    @Test("CanvasBoard drawing data setter and getter")
     @MainActor
     func testDrawingData() throws {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let originalData = canvas.drawingData
         
         let drawing = PKDrawing()
@@ -48,20 +48,20 @@ struct CanvasTests {
         #expect(newData.count >= data.count || newData != originalData)
     }
     
-    @Test("Canvas export as image returns image for empty drawing")
+    @Test("CanvasBoard export as image returns image for empty drawing")
     @MainActor
     func testExportEmptyDrawing() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         
         let image = canvas.exportAsImage()
         
         #expect(image != nil)
     }
     
-    @Test("Canvas undo/redo without canvasView")
+    @Test("CanvasBoard undo/redo without canvasView")
     @MainActor
     func testUndoRedoWithoutCanvasView() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         
         canvas.undo()
         canvas.redo()
@@ -70,10 +70,10 @@ struct CanvasTests {
         #expect(canvas.canRedo == false)
     }
     
-    @Test("Canvas setup with PKCanvasView")
+    @Test("CanvasBoard setup with PKCanvasView")
     @MainActor
     func testSetupCanvasView() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
         
         canvas.setupCanvasView(canvasView)

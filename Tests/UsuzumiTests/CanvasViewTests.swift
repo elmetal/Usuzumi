@@ -9,7 +9,7 @@ struct CanvasViewTests {
     
     @Test("CanvasView initialization with default configuration")
     func testDefaultInitialization() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = CanvasView(canvas: canvas)
         
         #expect(canvasView.canvas === canvas)
@@ -18,7 +18,7 @@ struct CanvasViewTests {
     
     @Test("CanvasView initialization with custom configuration")
     func testCustomConfiguration() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let config = CanvasConfiguration(
             backgroundColor: .systemGray,
             isRulerActive: true,
@@ -33,7 +33,7 @@ struct CanvasViewTests {
     
     @Test("CanvasView modifiers")
     func testViewModifiers() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let baseView = CanvasView(canvas: canvas)
         
         let modifiedView = baseView
@@ -56,7 +56,7 @@ struct CanvasViewTests {
     func testDelegateModifier() {
         class TestDelegate: CanvasDelegate {}
         let delegate = TestDelegate()
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let baseView = CanvasView(canvas: canvas)
         
         let viewWithDelegate = baseView.canvasDelegate(delegate)
@@ -66,7 +66,7 @@ struct CanvasViewTests {
     
     @Test("CanvasView makeCoordinator creates coordinator")
     func testMakeCoordinator() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = CanvasView(canvas: canvas)
         
         let coordinator = canvasView.makeCoordinator()

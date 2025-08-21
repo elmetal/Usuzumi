@@ -2,14 +2,14 @@ import SwiftUI
 import PencilKit
 
 public struct CanvasView: UIViewRepresentable {
-    @ObservedObject public var canvas: Canvas
+    @ObservedObject public var canvas: CanvasBoard
     public var configuration: CanvasConfiguration
     public weak var delegate: CanvasDelegate?
     
     private var isToolPickerVisible: Bool = false
     
     public init(
-        canvas: Canvas,
+        canvas: CanvasBoard,
         configuration: CanvasConfiguration = .default
     ) {
         self.canvas = canvas

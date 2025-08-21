@@ -3,7 +3,7 @@ import PencilKit
 
 @MainActor
 public class CanvasCoordinator: NSObject {
-    weak var canvas: Canvas?
+    weak var canvas: CanvasBoard?
     weak var delegate: CanvasDelegate?
     private var lastContentOffset: CGPoint = .zero
     private var lastZoomScale: CGFloat = 1.0
@@ -57,7 +57,7 @@ extension CanvasCoordinator: PKCanvasViewDelegate {
         let newZoomScale = canvasView.zoomScale
         if abs(newZoomScale - lastZoomScale) > 0.01 {
             lastZoomScale = newZoomScale
-            delegate?.canvas(canvas!, didZoomTo: newZoomScale)
+            delegate?.canvasBoard(canvas!, didZoomTo: newZoomScale)
         }
     }
     
@@ -65,7 +65,7 @@ extension CanvasCoordinator: PKCanvasViewDelegate {
         let newOffset = canvasView.contentOffset
         if !newOffset.equalTo(lastContentOffset) {
             lastContentOffset = newOffset
-            delegate?.canvas(canvas!, didScrollTo: newOffset)
+            delegate?.canvasBoard(canvas!, didScrollTo: newOffset)
         }
     }
 }

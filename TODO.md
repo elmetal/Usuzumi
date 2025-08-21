@@ -5,7 +5,7 @@
 - [x] Import PencilKit framework
 
 ## Core Components
-- [x] Create Canvas class (ObservableObject for state management)
+- [x] Create CanvasBoard class (ObservableObject for state management)
 - [x] Create CanvasConfiguration class (immutable settings)
 - [x] Create CanvasView (UIViewRepresentable wrapper)
 - [x] Create CanvasCoordinator (UIKit-SwiftUI bridge)
@@ -27,7 +27,7 @@
 - [ ] Add shape recognition
 
 ## Testing
-- [ ] Write unit tests for Canvas state
+- [ ] Write unit tests for CanvasBoard state
 - [ ] Write integration tests for SwiftUI
 - [ ] Add example app
 

@@ -3,7 +3,7 @@ import PencilKit
 import Combine
 
 @MainActor
-public class Canvas: ObservableObject {
+public class CanvasBoard: ObservableObject {
     @Published public private(set) var isDrawing: Bool = false
     @Published public private(set) var canUndo: Bool = false
     @Published public private(set) var canRedo: Bool = false

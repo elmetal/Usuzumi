@@ -9,7 +9,7 @@ struct IntegrationTests {
     
     @Test("Full canvas setup with view and coordinator")
     func testFullSetup() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let config = CanvasConfiguration(
             backgroundColor: .systemGray,
             isRulerActive: true
@@ -31,14 +31,14 @@ struct IntegrationTests {
         class TestDelegate: CanvasDelegate {
             var drawingChangedCount = 0
             
-            func canvasDrawingDidChange(_ canvas: Usuzumi.Canvas) {
+            func canvasDrawingDidChange(_ canvas: Usuzumi.CanvasBoard) {
                 drawingChangedCount += 1
             }
         }
         
         let delegate = TestDelegate()
         let coordinator = CanvasCoordinator(delegate: delegate)
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let pkCanvasView = PKCanvasView()
         
         coordinator.canvas = canvas
@@ -49,9 +49,9 @@ struct IntegrationTests {
         #expect(delegate.drawingChangedCount == 1)
     }
     
-    @Test("Canvas state updates through coordinator")
+    @Test("CanvasBoard state updates through coordinator")
     func testCanvasStateUpdates() {
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let coordinator = CanvasCoordinator(delegate: nil)
         let pkCanvasView = PKCanvasView()
         
@@ -69,8 +69,8 @@ struct IntegrationTests {
     
     @Test("Drawing data persistence")
     func testDrawingDataPersistence() throws {
-        let canvas1 = Canvas()
-        let canvas2 = Canvas()
+        let canvas1 = CanvasBoard()
+        let canvas2 = CanvasBoard()
         
         let drawing = PKDrawing()
         let data = try drawing.dataRepresentation()

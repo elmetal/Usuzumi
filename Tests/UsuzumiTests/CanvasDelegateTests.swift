@@ -15,24 +15,24 @@ struct CanvasDelegateTests {
         var lastZoomScale: CGFloat?
         var lastScrollOffset: CGPoint?
         
-        func canvasDidBeginDrawing(_ canvas: Canvas) {
+        func canvasDidBeginDrawing(_ canvas: CanvasBoard) {
             didBeginDrawingCalled = true
         }
         
-        func canvasDidEndDrawing(_ canvas: Canvas) {
+        func canvasDidEndDrawing(_ canvas: CanvasBoard) {
             didEndDrawingCalled = true
         }
         
-        func canvasDrawingDidChange(_ canvas: Canvas) {
+        func canvasDrawingDidChange(_ canvas: CanvasBoard) {
             drawingDidChangeCalled = true
         }
         
-        func canvas(_ canvas: Canvas, didZoomTo scale: CGFloat) {
+        func canvasBoard(_ canvas: CanvasBoard, didZoomTo scale: CGFloat) {
             didZoomCalled = true
             lastZoomScale = scale
         }
         
-        func canvas(_ canvas: Canvas, didScrollTo offset: CGPoint) {
+        func canvasBoard(_ canvas: CanvasBoard, didScrollTo offset: CGPoint) {
             didScrollCalled = true
             lastScrollOffset = offset
         }
@@ -44,13 +44,13 @@ struct CanvasDelegateTests {
         class MinimalDelegate: CanvasDelegate {}
         
         let delegate = MinimalDelegate()
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         
         delegate.canvasDidBeginDrawing(canvas)
         delegate.canvasDidEndDrawing(canvas)
         delegate.canvasDrawingDidChange(canvas)
-        delegate.canvas(canvas, didZoomTo: 1.0)
-        delegate.canvas(canvas, didScrollTo: .zero)
+        delegate.canvasBoard(canvas, didZoomTo: 1.0)
+        delegate.canvasBoard(canvas, didScrollTo: .zero)
         
         #expect(true)
     }
@@ -59,7 +59,7 @@ struct CanvasDelegateTests {
     @MainActor
     func testMockDelegateTracking() {
         let delegate = MockCanvasDelegate()
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         
         delegate.canvasDidBeginDrawing(canvas)
         #expect(delegate.didBeginDrawingCalled == true)
@@ -70,12 +70,12 @@ struct CanvasDelegateTests {
         delegate.canvasDrawingDidChange(canvas)
         #expect(delegate.drawingDidChangeCalled == true)
         
-        delegate.canvas(canvas, didZoomTo: 2.5)
+        delegate.canvasBoard(canvas, didZoomTo: 2.5)
         #expect(delegate.didZoomCalled == true)
         #expect(delegate.lastZoomScale == 2.5)
         
         let offset = CGPoint(x: 100, y: 200)
-        delegate.canvas(canvas, didScrollTo: offset)
+        delegate.canvasBoard(canvas, didScrollTo: offset)
         #expect(delegate.didScrollCalled == true)
         #expect(delegate.lastScrollOffset == offset)
     }

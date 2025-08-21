@@ -2,7 +2,7 @@ import SwiftUI
 import PencilKit
 
 struct ContentView: View {
-    @StateObject private var canvas = Canvas()
+    @StateObject private var canvas = CanvasBoard()
     
     var body: some View {
         NavigationView {

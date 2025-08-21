@@ -27,7 +27,7 @@ struct CanvasCoordinatorTests {
     @Test("Show tool picker creates tool picker")
     func testShowToolPicker() {
         let coordinator = CanvasCoordinator(delegate: nil)
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
         
         coordinator.canvas = canvas
@@ -41,7 +41,7 @@ struct CanvasCoordinatorTests {
     @Test("Hide tool picker removes tool picker")
     func testHideToolPicker() {
         let coordinator = CanvasCoordinator(delegate: nil)
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
         
         coordinator.canvas = canvas
@@ -57,7 +57,7 @@ struct CanvasCoordinatorTests {
     @Test("Tool picker selected tool change updates canvas")
     func testToolPickerSelectedToolChange() {
         let coordinator = CanvasCoordinator(delegate: nil)
-        let canvas = Canvas()
+        let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
         let toolPicker = PKToolPicker()
         
@@ -71,7 +71,7 @@ struct CanvasCoordinatorTests {
         
         #expect(canvas.currentTool is PKInkingTool)
         if let currentTool = canvas.currentTool as? PKInkingTool {
-            #expect(currentTool.inkType == .pencil)
+            #expect(currentTool.inkType == PKInkingTool.InkType.pencil)
         }
     }
 }

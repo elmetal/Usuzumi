@@ -2,17 +2,17 @@ import Foundation
 import PencilKit
 
 public protocol CanvasDelegate: AnyObject {
-    func canvasDidBeginDrawing(_ canvas: Canvas)
-    func canvasDidEndDrawing(_ canvas: Canvas)
-    func canvasDrawingDidChange(_ canvas: Canvas)
-    func canvas(_ canvas: Canvas, didZoomTo scale: CGFloat)
-    func canvas(_ canvas: Canvas, didScrollTo offset: CGPoint)
+    func canvasDidBeginDrawing(_ canvas: CanvasBoard)
+    func canvasDidEndDrawing(_ canvas: CanvasBoard)
+    func canvasDrawingDidChange(_ canvas: CanvasBoard)
+    func canvasBoard(_ canvas: CanvasBoard, didZoomTo scale: CGFloat)
+    func canvasBoard(_ canvas: CanvasBoard, didScrollTo offset: CGPoint)
 }
 
 public extension CanvasDelegate {
-    func canvasDidBeginDrawing(_ canvas: Canvas) {}
-    func canvasDidEndDrawing(_ canvas: Canvas) {}
-    func canvasDrawingDidChange(_ canvas: Canvas) {}
-    func canvas(_ canvas: Canvas, didZoomTo scale: CGFloat) {}
-    func canvas(_ canvas: Canvas, didScrollTo offset: CGPoint) {}
+    func canvasDidBeginDrawing(_ canvas: CanvasBoard) {}
+    func canvasDidEndDrawing(_ canvas: CanvasBoard) {}
+    func canvasDrawingDidChange(_ canvas: CanvasBoard) {}
+    func canvasBoard(_ canvas: CanvasBoard, didZoomTo scale: CGFloat) {}
+    func canvasBoard(_ canvas: CanvasBoard, didScrollTo offset: CGPoint) {}
 }
