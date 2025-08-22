@@ -5,5 +5,5 @@
 - [ ] Add shape recognition
 
 ## Documentation
-- [ ] Write API documentation
+- [x] Write API documentation (DocC-style documentation added)
 - [ ] Create README with quick start guide

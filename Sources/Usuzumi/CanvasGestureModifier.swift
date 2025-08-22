@@ -1,5 +1,32 @@
 import SwiftUI
 
+/// A view modifier that adds gesture recognition capabilities to a canvas view.
+///
+/// ``CanvasGestureModifier`` provides support for common gestures like pinch-to-zoom,
+/// pan, double-tap, and long press on the canvas.
+///
+/// ## Overview
+///
+/// Apply this modifier to your canvas view to enable gesture interactions:
+///
+/// ```swift
+/// CanvasView(canvas: canvas)
+///     .canvasGestures(
+///         canvas: canvas,
+///         onDoubleTap: {
+///             // Reset zoom on double tap
+///         },
+///         onLongPress: { location in
+///             // Show context menu at location
+///         }
+///     )
+/// ```
+///
+/// ## Topics
+///
+/// ### Gesture Callbacks
+/// - ``onDoubleTap``
+/// - ``onLongPress``
 public struct CanvasGestureModifier: ViewModifier {
     @ObservedObject var canvas: CanvasBoard
     
@@ -78,6 +105,17 @@ public struct CanvasGestureModifier: ViewModifier {
 
 // MARK: - View Extension
 public extension View {
+    /// Adds canvas gesture recognition to the view.
+    ///
+    /// This modifier enables pinch-to-zoom, pan, double-tap, and long press gestures
+    /// on the canvas view.
+    ///
+    /// - Parameters:
+    ///   - canvas: The canvas board to apply gestures to.
+    ///   - onDoubleTap: An optional closure called when the user double-taps the canvas.
+    ///   - onLongPress: An optional closure called when the user long-presses the canvas,
+    ///                  providing the press location.
+    /// - Returns: A view with canvas gesture recognition enabled.
     func canvasGestures(
         canvas: CanvasBoard,
         onDoubleTap: (() -> Void)? = nil,

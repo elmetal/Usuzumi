@@ -1,6 +1,23 @@
 import UIKit
 import PencilKit
 
+/// A coordinator that bridges PencilKit's UIKit components with SwiftUI.
+///
+/// ``CanvasCoordinator`` handles the communication between the canvas view,
+/// tool picker, and delegate callbacks. It manages tool selection, drawing
+/// state changes, and view updates.
+///
+/// ## Overview
+///
+/// This class is automatically created and managed by ``CanvasView``. It serves
+/// as the delegate for both `PKCanvasView` and `PKToolPicker`, forwarding
+/// relevant events to the ``CanvasDelegate``.
+///
+/// ## Topics
+///
+/// ### Tool Picker Management
+/// - ``showToolPicker(for:)``
+/// - ``hideToolPicker()``
 @MainActor
 public class CanvasCoordinator: NSObject {
     weak var canvas: CanvasBoard?
