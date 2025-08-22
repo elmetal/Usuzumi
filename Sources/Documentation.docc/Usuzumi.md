@@ -1,4 +1,4 @@
-# ``Usuzumi``
+# Usuzumi
 
 @Metadata {
   @TechnologyRoot
