@@ -30,11 +30,15 @@ jobs:
       
     - name: Build DocC Documentation
       run: |
-        $(xcrun --find docc) convert \
-          --transform-for-static-hosting \
-          --hosting-base-path "/docc" \
-          --output-path ./docs \
-          Sources/Documentation.docc
+          xcodebuild docbuild \
+            -scheme Usuzumi \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath DerivedData
+
+          $(xcrun --find docc) process-archive \
+             transform-for-static-hosting DerivedData/Build/Products/Debug-*/Usuzumi.doccarchive \
+             --output-path ./docs \
+             --hosting-base-path "Usuzumi"
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
