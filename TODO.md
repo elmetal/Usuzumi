@@ -12,7 +12,7 @@
 - [x] Create CanvasDelegate protocol
 
 ## Drawing Tools
-- [ ] Define DrawingTool enum
+- [x] Define DrawingTool enum
 - [x] Integrate PKToolPicker
 - [x] Implement tool selection sync
 
@@ -20,10 +20,10 @@
 - [x] Implement drawing import/export (via drawingData property)
 - [x] Add undo/redo functionality
 - [x] Support image export (via exportAsImage)
-- [ ] Support PDF export
+- [x] Support PDF export (via exportAsPDF)
 
 ## Advanced Features
-- [ ] Add gesture recognition support
+- [x] Add gesture recognition support (via CanvasGestureModifier)
 - [ ] Implement annotation features
 - [ ] Add shape recognition
 
