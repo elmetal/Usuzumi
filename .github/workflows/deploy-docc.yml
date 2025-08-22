@@ -34,7 +34,7 @@ jobs:
           --transform-for-static-hosting \
           --hosting-base-path "/docc" \
           --output-path ./docs \
-          Documentation.docc
+          Sources/Documentation.docc
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
