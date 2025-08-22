@@ -36,24 +36,3 @@ struct DrawingView: View {
     }
 }
 ```
-
-## Topics
-
-### Essentials
-
-- ``CanvasView``
-- ``CanvasBoard``
-- ``CanvasConfiguration``
-
-### Drawing Tools
-
-- ``DrawingTool``
-
-### Customization
-
-- ``CanvasDelegate``
-- ``CanvasGestureModifier``
-
-### Advanced
-
-- ``CanvasCoordinator``
