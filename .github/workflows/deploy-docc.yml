@@ -30,15 +30,12 @@ jobs:
       
     - name: Build DocC Documentation
       run: |
-        swift package resolve
-        
-        swift package generate-documentation \
-          --target Usuzumi \
-          --disable-indexing \
+        $(xcrun --find docc) convert \
           --transform-for-static-hosting \
-          --hosting-base-path /Usuzumi \
-          --output-path ./docs
-          
+          --hosting-base-path "/docc" \
+          --output-path ./docs \
+          Documentation.docc
+
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
