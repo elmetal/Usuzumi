@@ -1,8 +1,4 @@
-# Usuzumi
-
-@Metadata {
-  @TechnologyRoot
-}
+# ``Usuzumi``
 
 A modern SwiftUI wrapper for PencilKit that simplifies drawing and sketching in iOS applications.
 
