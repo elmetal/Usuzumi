@@ -30,9 +30,8 @@ struct ContentView: View {
                             .disabled(!canvas.canRedo)
                             
                             Button(action: {
-                                if let image = canvas.export(.image()) as? UIImage {
-                                    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-                                }
+                                let image = canvas.exportImage()
+                                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
                             }) {
                                 Image(systemName: "square.and.arrow.up")
                             }

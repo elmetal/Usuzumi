@@ -136,8 +136,8 @@ public struct CanvasView: UIViewRepresentable {
         let configuration = canvas.configuration
 
         canvasView.delegate = context.coordinator
-        canvasView.backgroundColor = backgroundColor
-        canvasView.isRulerActive = isRulerActive
+
+        // Static configuration — applied once, never changes
         canvasView.drawingPolicy = configuration.drawingPolicy
         canvasView.minimumZoomScale = configuration.minimumZoomScale
         canvasView.maximumZoomScale = configuration.maximumZoomScale
@@ -145,11 +145,12 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.isOpaque = configuration.isOpaque
         canvasView.tool = configuration.defaultTool
 
+        // Dynamic settings from Environment
+        canvasView.backgroundColor = backgroundColor
+        canvasView.isRulerActive = isRulerActive
+
         canvas.bind(to: canvasView)
         context.coordinator.canvas = canvas
-        context.coordinator.onDrawingChange = onDrawingChange
-        context.coordinator.onZoom = onZoom
-        context.coordinator.onScroll = onScroll
 
         if isToolPickerVisible {
             context.coordinator.showToolPicker(for: canvasView)
@@ -159,16 +160,9 @@ public struct CanvasView: UIViewRepresentable {
     }
 
     public func updateUIView(_ canvasView: PKCanvasView, context: Context) {
-        let configuration = canvas.configuration
-
+        // Only update dynamic (Environment-driven) properties
         canvasView.backgroundColor = backgroundColor
         canvasView.isRulerActive = isRulerActive
-        canvasView.drawingPolicy = configuration.drawingPolicy
-        canvasView.minimumZoomScale = configuration.minimumZoomScale
-        canvasView.maximumZoomScale = configuration.maximumZoomScale
-        canvasView.isScrollEnabled = configuration.isScrollEnabled
-        canvasView.isOpaque = configuration.isOpaque
-        canvasView.tool = canvas.currentTool
 
         context.coordinator.onDrawingChange = onDrawingChange
         context.coordinator.onZoom = onZoom

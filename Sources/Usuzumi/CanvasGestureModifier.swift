@@ -42,7 +42,6 @@ struct CanvasGestureModifier: ViewModifier {
                 handleDoubleTap()
             }
             .onLongPressGesture(minimumDuration: 0.5) {
-                // Long press without location
                 onLongPress?(.zero)
             }
             .gesture(
@@ -67,19 +66,16 @@ struct CanvasGestureModifier: ViewModifier {
     
     private func handleDoubleTap() {
         if let canvasView = canvas.boundCanvasView {
-            // Reset zoom to 1.0
             canvasView.setZoomScale(1.0, animated: true)
         }
         onDoubleTap?()
     }
-    
+
     private func handlePinch(scale: CGFloat) {
         guard let canvasView = canvas.boundCanvasView else { return }
-        
+
         let delta = scale / lastScaleValue
         let newScale = canvasView.zoomScale * delta
-        
-        // Clamp to min/max zoom scale
         let clampedScale = min(max(newScale, canvasView.minimumZoomScale), canvasView.maximumZoomScale)
         canvasView.zoomScale = clampedScale
         

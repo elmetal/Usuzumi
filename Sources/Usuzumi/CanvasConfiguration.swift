@@ -13,31 +13,13 @@ extension CanvasBoard {
     /// ```swift
     /// let canvas = CanvasBoard(
     ///     configuration: .init(
-    ///         allowsFingerDrawing: false,
+    ///         drawingPolicy: .pencilOnly,
     ///         minimumZoomScale: 1.0,
     ///         maximumZoomScale: 3.0
     ///     )
     /// )
     /// ```
-    ///
-    /// ## Topics
-    ///
-    /// ### Creating a Configuration
-    /// - ``init(allowsFingerDrawing:defaultTool:minimumZoomScale:maximumZoomScale:isScrollEnabled:isOpaque:drawingPolicy:)``
-    /// - ``default``
-    ///
-    /// ### Configuration Properties
-    /// - ``allowsFingerDrawing``
-    /// - ``defaultTool``
-    /// - ``minimumZoomScale``
-    /// - ``maximumZoomScale``
-    /// - ``isScrollEnabled``
-    /// - ``isOpaque``
-    /// - ``drawingPolicy``
     public struct Configuration {
-        /// A Boolean value that determines whether finger drawing is allowed.
-        public let allowsFingerDrawing: Bool
-
         /// The default drawing tool to use when the canvas is created.
         public let defaultTool: PKTool
 
@@ -57,17 +39,7 @@ extension CanvasBoard {
         public let drawingPolicy: PKCanvasViewDrawingPolicy
 
         /// Creates a canvas configuration with the specified settings.
-        ///
-        /// - Parameters:
-        ///   - allowsFingerDrawing: Whether finger drawing is allowed. Defaults to `true`.
-        ///   - defaultTool: The default drawing tool. Defaults to a black pen with width 5.
-        ///   - minimumZoomScale: The minimum zoom scale. Defaults to `0.5`.
-        ///   - maximumZoomScale: The maximum zoom scale. Defaults to `5.0`.
-        ///   - isScrollEnabled: Whether scrolling is enabled. Defaults to `true`.
-        ///   - isOpaque: Whether the canvas is opaque. Defaults to `true`.
-        ///   - drawingPolicy: The drawing input policy. Defaults to `.anyInput`.
         public init(
-            allowsFingerDrawing: Bool = true,
             defaultTool: PKTool = PKInkingTool(.pen, color: .black, width: 5),
             minimumZoomScale: CGFloat = 0.5,
             maximumZoomScale: CGFloat = 5.0,
@@ -75,7 +47,6 @@ extension CanvasBoard {
             isOpaque: Bool = true,
             drawingPolicy: PKCanvasViewDrawingPolicy = .anyInput
         ) {
-            self.allowsFingerDrawing = allowsFingerDrawing
             self.defaultTool = defaultTool
             self.minimumZoomScale = minimumZoomScale
             self.maximumZoomScale = maximumZoomScale

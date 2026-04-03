@@ -19,19 +19,17 @@ struct CanvasViewTests {
     func testSimpleInitialization() {
         let canvasView = CanvasView()
 
-        #expect(canvasView.canvas.configuration.allowsFingerDrawing == true)
+        #expect(canvasView.canvas.configuration.drawingPolicy == .anyInput)
     }
 
     @Test("CanvasView initialization with custom configuration")
     func testCustomConfiguration() {
         let config = CanvasBoard.Configuration(
-            allowsFingerDrawing: false,
             drawingPolicy: .pencilOnly
         )
         let canvas = CanvasBoard(configuration: config)
         let canvasView = CanvasView(canvas)
 
-        #expect(canvas.configuration.allowsFingerDrawing == false)
         #expect(canvas.configuration.drawingPolicy == .pencilOnly)
     }
 
