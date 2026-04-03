@@ -2,19 +2,17 @@ import SwiftUI
 import PencilKit
 
 extension CanvasBoard {
-    /// A configuration object that defines the appearance and behavior of a canvas view.
+    /// A configuration object that defines the structural behavior of a canvas view.
     ///
-    /// Use ``Configuration`` to customize various aspects of the drawing canvas,
-    /// including background color, input policies, and zoom settings.
+    /// Use ``Configuration`` to set properties that are determined at creation time
+    /// and do not change during the canvas lifetime. For dynamic properties like
+    /// ruler visibility or background color, use the corresponding view modifiers.
     ///
     /// ## Overview
-    ///
-    /// Create a configuration to customize how your canvas looks and behaves:
     ///
     /// ```swift
     /// let canvas = CanvasBoard(
     ///     configuration: .init(
-    ///         backgroundColor: .white,
     ///         allowsFingerDrawing: false,
     ///         minimumZoomScale: 1.0,
     ///         maximumZoomScale: 3.0
@@ -25,12 +23,10 @@ extension CanvasBoard {
     /// ## Topics
     ///
     /// ### Creating a Configuration
-    /// - ``init(backgroundColor:isRulerActive:allowsFingerDrawing:defaultTool:minimumZoomScale:maximumZoomScale:isScrollEnabled:isOpaque:drawingPolicy:)``
+    /// - ``init(allowsFingerDrawing:defaultTool:minimumZoomScale:maximumZoomScale:isScrollEnabled:isOpaque:drawingPolicy:)``
     /// - ``default``
     ///
     /// ### Configuration Properties
-    /// - ``backgroundColor``
-    /// - ``isRulerActive``
     /// - ``allowsFingerDrawing``
     /// - ``defaultTool``
     /// - ``minimumZoomScale``
@@ -39,12 +35,6 @@ extension CanvasBoard {
     /// - ``isOpaque``
     /// - ``drawingPolicy``
     public struct Configuration {
-        /// The background color of the canvas.
-        public let backgroundColor: UIColor
-
-        /// A Boolean value that determines whether the ruler is active.
-        public let isRulerActive: Bool
-
         /// A Boolean value that determines whether finger drawing is allowed.
         public let allowsFingerDrawing: Bool
 
@@ -69,8 +59,6 @@ extension CanvasBoard {
         /// Creates a canvas configuration with the specified settings.
         ///
         /// - Parameters:
-        ///   - backgroundColor: The background color of the canvas. Defaults to `.systemBackground`.
-        ///   - isRulerActive: Whether the ruler is initially active. Defaults to `false`.
         ///   - allowsFingerDrawing: Whether finger drawing is allowed. Defaults to `true`.
         ///   - defaultTool: The default drawing tool. Defaults to a black pen with width 5.
         ///   - minimumZoomScale: The minimum zoom scale. Defaults to `0.5`.
@@ -79,8 +67,6 @@ extension CanvasBoard {
         ///   - isOpaque: Whether the canvas is opaque. Defaults to `true`.
         ///   - drawingPolicy: The drawing input policy. Defaults to `.anyInput`.
         public init(
-            backgroundColor: UIColor = .systemBackground,
-            isRulerActive: Bool = false,
             allowsFingerDrawing: Bool = true,
             defaultTool: PKTool = PKInkingTool(.pen, color: .black, width: 5),
             minimumZoomScale: CGFloat = 0.5,
@@ -89,8 +75,6 @@ extension CanvasBoard {
             isOpaque: Bool = true,
             drawingPolicy: PKCanvasViewDrawingPolicy = .anyInput
         ) {
-            self.backgroundColor = backgroundColor
-            self.isRulerActive = isRulerActive
             self.allowsFingerDrawing = allowsFingerDrawing
             self.defaultTool = defaultTool
             self.minimumZoomScale = minimumZoomScale
@@ -101,8 +85,6 @@ extension CanvasBoard {
         }
 
         /// The default canvas configuration.
-        ///
-        /// This configuration uses system default values for all settings.
         public static var `default`: Configuration {
             Configuration()
         }

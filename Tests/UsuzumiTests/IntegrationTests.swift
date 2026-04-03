@@ -10,8 +10,7 @@ struct IntegrationTests {
     @Test("Full canvas setup with view and coordinator")
     func testFullSetup() {
         let config = CanvasBoard.Configuration(
-            backgroundColor: .systemGray,
-            isRulerActive: true
+            drawingPolicy: .pencilOnly
         )
         let canvas = CanvasBoard(configuration: config)
         let canvasView = CanvasView(canvas)

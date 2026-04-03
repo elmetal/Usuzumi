@@ -7,10 +7,28 @@ private struct CanvasToolPickerVisibleKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
+private struct CanvasRulerActiveKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+private struct CanvasBackgroundColorKey: EnvironmentKey {
+    static let defaultValue: UIColor = .systemBackground
+}
+
 extension EnvironmentValues {
     var canvasToolPickerVisible: Bool {
         get { self[CanvasToolPickerVisibleKey.self] }
         set { self[CanvasToolPickerVisibleKey.self] = newValue }
+    }
+
+    var canvasRulerActive: Bool {
+        get { self[CanvasRulerActiveKey.self] }
+        set { self[CanvasRulerActiveKey.self] = newValue }
+    }
+
+    var canvasBackgroundColor: UIColor {
+        get { self[CanvasBackgroundColorKey.self] }
+        set { self[CanvasBackgroundColorKey.self] = newValue }
     }
 }
 
@@ -32,7 +50,7 @@ extension EnvironmentValues {
 /// ```swift
 /// var body: some View {
 ///     CanvasView()
-///         .canvasToolPickerVisible(true)
+///         .toolPickerVisible(true)
 /// }
 /// ```
 ///
@@ -44,7 +62,9 @@ extension EnvironmentValues {
 ///
 ///     var body: some View {
 ///         CanvasView(canvas)
-///             .canvasToolPickerVisible(true)
+///             .toolPickerVisible(true)
+///             .rulerActive(false)
+///             .backgroundColor(.white)
 ///     }
 /// }
 /// ```
@@ -59,6 +79,8 @@ public struct CanvasView: UIViewRepresentable {
     public var canvas: CanvasBoard
 
     @Environment(\.canvasToolPickerVisible) private var isToolPickerVisible
+    @Environment(\.canvasRulerActive) private var isRulerActive
+    @Environment(\.canvasBackgroundColor) private var backgroundColor
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -82,8 +104,8 @@ public struct CanvasView: UIViewRepresentable {
         let configuration = canvas.configuration
 
         canvasView.delegate = context.coordinator
-        canvasView.backgroundColor = configuration.backgroundColor
-        canvasView.isRulerActive = configuration.isRulerActive
+        canvasView.backgroundColor = backgroundColor
+        canvasView.isRulerActive = isRulerActive
         canvasView.drawingPolicy = configuration.drawingPolicy
         canvasView.minimumZoomScale = configuration.minimumZoomScale
         canvasView.maximumZoomScale = configuration.maximumZoomScale
@@ -104,8 +126,8 @@ public struct CanvasView: UIViewRepresentable {
     public func updateUIView(_ canvasView: PKCanvasView, context: Context) {
         let configuration = canvas.configuration
 
-        canvasView.backgroundColor = configuration.backgroundColor
-        canvasView.isRulerActive = configuration.isRulerActive
+        canvasView.backgroundColor = backgroundColor
+        canvasView.isRulerActive = isRulerActive
         canvasView.drawingPolicy = configuration.drawingPolicy
         canvasView.minimumZoomScale = configuration.minimumZoomScale
         canvasView.maximumZoomScale = configuration.maximumZoomScale
@@ -128,14 +150,24 @@ public struct CanvasView: UIViewRepresentable {
 // MARK: - View Modifiers
 
 public extension View {
-    /// Controls the visibility of the PencilKit tool picker for a canvas view.
-    ///
-    /// When visible, the tool picker allows users to select drawing tools,
-    /// colors, and other drawing options.
+    /// Controls the visibility of the PencilKit tool picker.
     ///
     /// - Parameter visible: A Boolean value that determines whether the tool picker is visible.
-    /// - Returns: A view with the updated tool picker visibility.
     func toolPickerVisible(_ visible: Bool) -> some View {
         environment(\.canvasToolPickerVisible, visible)
+    }
+
+    /// Activates or deactivates the ruler on the canvas.
+    ///
+    /// - Parameter active: A Boolean value that determines whether the ruler is active.
+    func rulerActive(_ active: Bool) -> some View {
+        environment(\.canvasRulerActive, active)
+    }
+
+    /// Sets the background color of the canvas.
+    ///
+    /// - Parameter color: The background color to apply.
+    func backgroundColor(_ color: UIColor) -> some View {
+        environment(\.canvasBackgroundColor, color)
     }
 }

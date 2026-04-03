@@ -10,8 +10,6 @@ struct CanvasConfigurationTests {
     func testDefaultInitialization() {
         let config = CanvasBoard.Configuration()
 
-        #expect(config.backgroundColor == .systemBackground)
-        #expect(config.isRulerActive == false)
         #expect(config.allowsFingerDrawing == true)
         #expect(config.defaultTool is PKInkingTool)
         #expect(config.minimumZoomScale == 0.5)
@@ -25,8 +23,6 @@ struct CanvasConfigurationTests {
     func testCustomInitialization() {
         let customTool = PKInkingTool(.pencil, color: .blue, width: 10)
         let config = CanvasBoard.Configuration(
-            backgroundColor: .systemGray,
-            isRulerActive: true,
             allowsFingerDrawing: false,
             defaultTool: customTool,
             minimumZoomScale: 0.2,
@@ -36,8 +32,6 @@ struct CanvasConfigurationTests {
             drawingPolicy: .pencilOnly
         )
 
-        #expect(config.backgroundColor == .systemGray)
-        #expect(config.isRulerActive == true)
         #expect(config.allowsFingerDrawing == false)
         #expect(type(of: config.defaultTool) == type(of: customTool))
         #expect(config.minimumZoomScale == 0.2)
@@ -51,8 +45,7 @@ struct CanvasConfigurationTests {
     func testStaticDefault() {
         let config = CanvasBoard.Configuration.default
 
-        #expect(config.backgroundColor == .systemBackground)
-        #expect(config.isRulerActive == false)
         #expect(config.allowsFingerDrawing == true)
+        #expect(config.isScrollEnabled == true)
     }
 }

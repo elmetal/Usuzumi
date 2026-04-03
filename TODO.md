@@ -32,12 +32,11 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 4. View Modifier の再設計
 
-- [ ] struct コピーではなく SwiftUI `Environment` / `Preference` 経由の伝搬に変更
-  - 現状: `var view = self; view.configuration.xxx = yyy` で struct を書き換えている
-  - 目標: `.webViewBackForwardNavigationGestures(_:)` 等と同様の仕組み
+- [x] struct コピーではなく SwiftUI `Environment` / `Preference` 経由の伝搬に変更
+  - `toolPickerVisible`, `rulerActive`, `backgroundColor` を Environment 化
 - [x] ~~modifier 名に `canvas` プレフィックスを付ける~~ → 不要と判断、プレフィックスなしで進める
-- [ ] Configuration で確定すべき設定（init 時）と動的に変更可能な設定を分離
-  - Configuration: `drawingPolicy`, `isOpaque`, `defaultTool`, zoom range
+- [x] Configuration で確定すべき設定（init 時）と動的に変更可能な設定を分離
+  - Configuration: `drawingPolicy`, `isOpaque`, `defaultTool`, zoom range, `allowsFingerDrawing`, `isScrollEnabled`
   - 動的設定（Environment）: `toolPickerVisible`, `rulerActive`, `backgroundColor`
 
 ### 5. Delegate パターンの刷新
@@ -62,7 +61,7 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 8. Combine 依存の除去
 
-- [ ] `import Combine` / `cancellables` を削除（`@Observable` 移行で不要に）
+- [x] `import Combine` / `cancellables` を削除（`@Observable` 移行時に対応済み）
 
 ### 9. エクスポート API の改善
 
