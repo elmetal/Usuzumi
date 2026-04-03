@@ -9,17 +9,17 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 1. `@Observable` への移行
 
-- [ ] `CanvasBoard` を `ObservableObject` (`@Published`) から `@Observable` マクロに移行
-- [ ] 利用側の `@StateObject` / `@ObservedObject` を `@State` / `@Bindable` に置き換え
+- [x] `CanvasBoard` を `ObservableObject` (`@Published`) から `@Observable` マクロに移行
+- [x] 利用側の `@StateObject` / `@ObservedObject` を `@State` / `@Bindable` に置き換え
   - `WebPage` は `@Observable` な `final class`
 
 ### 2. Configuration をネスト型にし、State 側に所有させる
 
-- [ ] `CanvasConfiguration` → `CanvasBoard.Configuration` に移動
-- [ ] `CanvasBoard(configuration:)` で受け取り、init 時に確定させる
+- [x] `CanvasConfiguration` → `CanvasBoard.Configuration` に移動
+- [x] `CanvasBoard(configuration:)` で受け取り、init 時に確定させる
   - 現状: `CanvasView` の引数として渡しており、State 側が Configuration を所有していない
   - 目標: `CanvasBoard(configuration:)` → `CanvasView(canvas)` の流れ
-- [ ] Configuration のプロパティを `let`（イミュータブル）にする
+- [x] Configuration のプロパティを `let`（イミュータブル）にする
   - `WebPage.Configuration` は値型で、init 後は変更しない設計
 
 ### 3. CanvasView のイニシャライザ整理

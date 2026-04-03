@@ -1,6 +1,5 @@
 import SwiftUI
 import PencilKit
-import Combine
 
 /// A view model that manages the state and behavior of a drawing canvas.
 ///
@@ -37,39 +36,46 @@ import Combine
 /// ### Exporting Content
 /// - ``exportAsImage()``
 /// - ``exportAsPDF()``
+@Observable
 @MainActor
-public class CanvasBoard: ObservableObject {
+public final class CanvasBoard {
     /// A Boolean value indicating whether the user is currently drawing.
     ///
     /// This property is automatically updated when the user begins or ends drawing on the canvas.
-    @Published public private(set) var isDrawing: Bool = false
+    public private(set) var isDrawing: Bool = false
     /// A Boolean value indicating whether an undo operation is available.
     ///
     /// Use this property to enable or disable undo buttons in your UI.
-    @Published public private(set) var canUndo: Bool = false
+    public private(set) var canUndo: Bool = false
     /// A Boolean value indicating whether a redo operation is available.
     ///
     /// Use this property to enable or disable redo buttons in your UI.
-    @Published public private(set) var canRedo: Bool = false
+    public private(set) var canRedo: Bool = false
     /// The current PencilKit tool being used for drawing.
     ///
     /// This property provides direct access to the underlying `PKTool` instance.
-    @Published public var currentTool: PKTool = PKInkingTool(.pen, color: .black, width: 5)
+    public var currentTool: PKTool = PKInkingTool(.pen, color: .black, width: 5)
     /// The current drawing tool represented as a `DrawingTool` enum.
     ///
     /// This property provides a higher-level abstraction over `PKTool` for easier tool management.
-    @Published public var currentDrawingTool: DrawingTool = .pen(color: .black, width: 5)
-    
-    internal var canvasView: PKCanvasView?
-    internal var toolPicker: PKToolPicker?
-    
-    private var drawing: PKDrawing = PKDrawing()
-    private var cancellables = Set<AnyCancellable>()
-    
-    /// Creates a new canvas board instance.
+    public var currentDrawingTool: DrawingTool = .pen(color: .black, width: 5)
+
+    /// The configuration used to create this canvas board.
+    public let configuration: Configuration
+
+    @ObservationIgnored internal var canvasView: PKCanvasView?
+    @ObservationIgnored internal var toolPicker: PKToolPicker?
+
+    @ObservationIgnored private var drawing: PKDrawing = PKDrawing()
+
+    /// Creates a new canvas board instance with the specified configuration.
     ///
-    /// The canvas board is initialized with default settings and a pen tool.
-    public init() {}
+    /// - Parameter configuration: The configuration settings for the canvas. Defaults to `.default`.
+    public init(configuration: Configuration = .default) {
+        self.configuration = configuration
+        self.currentTool = configuration.defaultTool
+        self.currentDrawingTool = .pen(color: .black, width: 5)
+    }
     
     /// The drawing data that can be saved and restored.
     ///

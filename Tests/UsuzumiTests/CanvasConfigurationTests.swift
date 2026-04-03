@@ -3,13 +3,13 @@ import SwiftUI
 import PencilKit
 @testable import Usuzumi
 
-@Suite("CanvasConfiguration Tests")
+@Suite("CanvasBoard.Configuration Tests")
 struct CanvasConfigurationTests {
-    
-    @Test("CanvasConfiguration initializes with default values")
+
+    @Test("Configuration initializes with default values")
     func testDefaultInitialization() {
-        let config = CanvasConfiguration()
-        
+        let config = CanvasBoard.Configuration()
+
         #expect(config.backgroundColor == .systemBackground)
         #expect(config.isRulerActive == false)
         #expect(config.allowsFingerDrawing == true)
@@ -20,11 +20,11 @@ struct CanvasConfigurationTests {
         #expect(config.isOpaque == true)
         #expect(config.drawingPolicy == .anyInput)
     }
-    
-    @Test("CanvasConfiguration custom initialization")
+
+    @Test("Configuration custom initialization")
     func testCustomInitialization() {
         let customTool = PKInkingTool(.pencil, color: .blue, width: 10)
-        let config = CanvasConfiguration(
+        let config = CanvasBoard.Configuration(
             backgroundColor: .systemGray,
             isRulerActive: true,
             allowsFingerDrawing: false,
@@ -35,7 +35,7 @@ struct CanvasConfigurationTests {
             isOpaque: false,
             drawingPolicy: .pencilOnly
         )
-        
+
         #expect(config.backgroundColor == .systemGray)
         #expect(config.isRulerActive == true)
         #expect(config.allowsFingerDrawing == false)
@@ -46,11 +46,11 @@ struct CanvasConfigurationTests {
         #expect(config.isOpaque == false)
         #expect(config.drawingPolicy == .pencilOnly)
     }
-    
-    @Test("CanvasConfiguration static default property")
+
+    @Test("Configuration static default property")
     func testStaticDefault() {
-        let config = CanvasConfiguration.default
-        
+        let config = CanvasBoard.Configuration.default
+
         #expect(config.backgroundColor == .systemBackground)
         #expect(config.isRulerActive == false)
         #expect(config.allowsFingerDrawing == true)

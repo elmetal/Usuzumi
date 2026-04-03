@@ -2,15 +2,12 @@ import SwiftUI
 import PencilKit
 
 struct ContentView: View {
-    @StateObject private var canvas = CanvasBoard()
+    @State private var canvas = CanvasBoard()
     
     var body: some View {
         NavigationView {
-            CanvasView(canvas: canvas)
+            CanvasView(canvas)
                 .toolPickerVisible(true)
-                .rulerActive(false)
-                .allowsFingerDrawing(true)
-                .backgroundColor(.systemBackground)
                 .navigationTitle("Sketch")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

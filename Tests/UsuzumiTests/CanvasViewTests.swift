@@ -6,71 +6,50 @@ import PencilKit
 @Suite("CanvasView Tests")
 @MainActor
 struct CanvasViewTests {
-    
+
     @Test("CanvasView initialization with default configuration")
     func testDefaultInitialization() {
         let canvas = CanvasBoard()
-        let canvasView = CanvasView(canvas: canvas)
-        
+        let canvasView = CanvasView(canvas)
+
         #expect(canvasView.canvas === canvas)
-        #expect(canvasView.configuration.backgroundColor == .systemBackground)
+        #expect(canvas.configuration.backgroundColor == .systemBackground)
     }
-    
+
     @Test("CanvasView initialization with custom configuration")
     func testCustomConfiguration() {
-        let canvas = CanvasBoard()
-        let config = CanvasConfiguration(
+        let config = CanvasBoard.Configuration(
             backgroundColor: .systemGray,
             isRulerActive: true,
             allowsFingerDrawing: false
         )
-        let canvasView = CanvasView(canvas: canvas, configuration: config)
-        
-        #expect(canvasView.configuration.backgroundColor == .systemGray)
-        #expect(canvasView.configuration.isRulerActive == true)
-        #expect(canvasView.configuration.allowsFingerDrawing == false)
+        let canvas = CanvasBoard(configuration: config)
+        let canvasView = CanvasView(canvas)
+
+        #expect(canvas.configuration.backgroundColor == .systemGray)
+        #expect(canvas.configuration.isRulerActive == true)
+        #expect(canvas.configuration.allowsFingerDrawing == false)
     }
-    
-    @Test("CanvasView modifiers")
-    func testViewModifiers() {
-        let canvas = CanvasBoard()
-        let baseView = CanvasView(canvas: canvas)
-        
-        let modifiedView = baseView
-            .toolPickerVisible(true)
-            .rulerActive(true)
-            .allowsFingerDrawing(false)
-            .backgroundColor(.systemGray2)
-            .scrollEnabled(false)
-            .zoomScale(min: 0.1, max: 20.0)
-        
-        #expect(modifiedView.configuration.isRulerActive == true)
-        #expect(modifiedView.configuration.drawingPolicy == .pencilOnly)
-        #expect(modifiedView.configuration.backgroundColor == .systemGray2)
-        #expect(modifiedView.configuration.isScrollEnabled == false)
-        #expect(modifiedView.configuration.minimumZoomScale == 0.1)
-        #expect(modifiedView.configuration.maximumZoomScale == 20.0)
-    }
-    
+
     @Test("CanvasView delegate modifier")
     func testDelegateModifier() {
         class TestDelegate: CanvasDelegate {}
         let delegate = TestDelegate()
         let canvas = CanvasBoard()
-        let baseView = CanvasView(canvas: canvas)
-        
+        let baseView = CanvasView(canvas)
+
         let viewWithDelegate = baseView.canvasDelegate(delegate)
-        
+
         #expect(viewWithDelegate.delegate === delegate)
     }
-    
+
     @Test("CanvasView makeCoordinator creates coordinator")
     func testMakeCoordinator() {
         let canvas = CanvasBoard()
-        let canvasView = CanvasView(canvas: canvas)
-        
+        let canvasView = CanvasView(canvas)
+
         let coordinator = canvasView.makeCoordinator()
-        
+
         #expect(coordinator is CanvasCoordinator)
     }
 }

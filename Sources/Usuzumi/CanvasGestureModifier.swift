@@ -10,7 +10,7 @@ import SwiftUI
 /// Apply this modifier to your canvas view to enable gesture interactions:
 ///
 /// ```swift
-/// CanvasView(canvas: canvas)
+/// CanvasView(canvas)
 ///     .canvasGestures(
 ///         canvas: canvas,
 ///         onDoubleTap: {
@@ -28,7 +28,7 @@ import SwiftUI
 /// - ``onDoubleTap``
 /// - ``onLongPress``
 public struct CanvasGestureModifier: ViewModifier {
-    @ObservedObject var canvas: CanvasBoard
+    var canvas: CanvasBoard
     
     @State private var lastScaleValue: CGFloat = 1.0
     @State private var lastOffset: CGSize = .zero
