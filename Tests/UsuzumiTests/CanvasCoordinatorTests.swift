@@ -3,56 +3,56 @@ import UIKit
 import PencilKit
 @testable import Usuzumi
 
-@Suite("CanvasCoordinator Tests")
+@Suite("CanvasView.Coordinator Tests")
 @MainActor
-struct CanvasCoordinatorTests {
+struct CoordinatorTests {
 
-    @Test("CanvasCoordinator initialization")
+    @Test("CanvasView.Coordinator initialization")
     func testInitialization() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
 
         #expect(coordinator.canvas == nil)
     }
 
     @Test("Show tool picker creates tool picker")
     func testShowToolPicker() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(canvasView)
+        canvas.bind(to: canvasView)
 
         coordinator.showToolPicker(for: canvasView)
 
-        #expect(canvas.toolPicker != nil)
+        #expect(coordinator.toolPicker != nil)
     }
 
     @Test("Hide tool picker removes tool picker")
     func testHideToolPicker() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(canvasView)
+        canvas.bind(to: canvasView)
 
         coordinator.showToolPicker(for: canvasView)
-        #expect(canvas.toolPicker != nil)
+        #expect(coordinator.toolPicker != nil)
 
         coordinator.hideToolPicker()
-        #expect(canvas.toolPicker == nil)
+        #expect(coordinator.toolPicker == nil)
     }
 
     @Test("Tool picker selected tool change updates canvas")
     func testToolPickerSelectedToolChange() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
         let toolPicker = PKToolPicker()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(canvasView)
+        canvas.bind(to: canvasView)
 
         let newTool = PKInkingTool(.pencil, color: .red, width: 10)
         toolPicker.selectedTool = newTool
@@ -67,12 +67,12 @@ struct CanvasCoordinatorTests {
 
     @Test("Drawing change callback is invoked")
     func testDrawingChangeCallback() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(canvasView)
+        canvas.bind(to: canvasView)
 
         var callCount = 0
         coordinator.onDrawingChange = { _ in callCount += 1 }

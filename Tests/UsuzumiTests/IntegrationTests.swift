@@ -18,21 +18,21 @@ struct IntegrationTests {
         let coordinator = canvasView.makeCoordinator()
         let pkCanvasView = PKCanvasView()
 
-        canvas.setupCanvasView(pkCanvasView)
+        canvas.bind(to: pkCanvasView)
         coordinator.canvas = canvas
 
-        #expect(canvas.canvasView === pkCanvasView)
+        #expect(canvas.boundCanvasView === pkCanvasView)
         #expect(coordinator.canvas === canvas)
     }
 
     @Test("Drawing change callback through coordinator")
     func testDrawingChangeCallback() {
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let pkCanvasView = PKCanvasView()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(pkCanvasView)
+        canvas.bind(to: pkCanvasView)
 
         var changedCanvas: CanvasBoard?
         coordinator.onDrawingChange = { canvas in
@@ -47,11 +47,11 @@ struct IntegrationTests {
     @Test("CanvasBoard state updates through coordinator")
     func testCanvasStateUpdates() {
         let canvas = CanvasBoard()
-        let coordinator = CanvasCoordinator()
+        let coordinator = CanvasView.Coordinator()
         let pkCanvasView = PKCanvasView()
 
         coordinator.canvas = canvas
-        canvas.setupCanvasView(pkCanvasView)
+        canvas.bind(to: pkCanvasView)
 
         #expect(canvas.isDrawing == false)
 

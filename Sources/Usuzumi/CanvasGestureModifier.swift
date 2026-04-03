@@ -27,7 +27,7 @@ import SwiftUI
 /// ### Gesture Callbacks
 /// - ``onDoubleTap``
 /// - ``onLongPress``
-public struct CanvasGestureModifier: ViewModifier {
+struct CanvasGestureModifier: ViewModifier {
     var canvas: CanvasBoard
     
     @State private var lastScaleValue: CGFloat = 1.0
@@ -66,7 +66,7 @@ public struct CanvasGestureModifier: ViewModifier {
     }
     
     private func handleDoubleTap() {
-        if let canvasView = canvas.canvasView {
+        if let canvasView = canvas.boundCanvasView {
             // Reset zoom to 1.0
             canvasView.setZoomScale(1.0, animated: true)
         }
@@ -74,7 +74,7 @@ public struct CanvasGestureModifier: ViewModifier {
     }
     
     private func handlePinch(scale: CGFloat) {
-        guard let canvasView = canvas.canvasView else { return }
+        guard let canvasView = canvas.boundCanvasView else { return }
         
         let delta = scale / lastScaleValue
         let newScale = canvasView.zoomScale * delta
@@ -87,7 +87,7 @@ public struct CanvasGestureModifier: ViewModifier {
     }
     
     private func handlePan(translation: CGSize) {
-        guard let canvasView = canvas.canvasView else { return }
+        guard let canvasView = canvas.boundCanvasView else { return }
         
         let delta = CGSize(
             width: translation.width - lastOffset.width,

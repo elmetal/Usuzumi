@@ -47,14 +47,15 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 6. CanvasBoard 内部実装の隠蔽
 
-- [ ] `canvasView: PKCanvasView?` / `toolPicker: PKToolPicker?` を `private` にする
-  - `WebPage` は内部の `WKWebView` を公開していない
-- [ ] `updateUndoRedoState()`, `setDrawingState(_:)`, `setupCanvasView(_:)` を隠蔽
+- [x] `canvasView: PKCanvasView?` を `private` にし、`boundCanvasView` で読み取り専用公開
+- [x] `toolPicker` を Coordinator に移動（CanvasBoard から完全除去）
+- [x] `setupCanvasView()` → `bind(to:)` / `unbind()` に改名、internal アクセス
+- [x] `updateUndoRedoState()`, `setDrawingState(_:)` を internal に
 
 ### 7. 1:1 バインディングの保証
 
-- [ ] `CanvasBoard` が複数の `CanvasView` に同時バインドされないよう制約する
-  - `WebPage` は同時に1つの `WebView` のみバインド可能
+- [x] `bind(to:)` で `precondition(!isBound)` を追加
+  - 二重バインド時にクラッシュで即発見できる
 
 ### 8. Combine 依存の除去
 
@@ -62,15 +63,15 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 9. エクスポート API の改善
 
-- [ ] `exportAsImage()` / `exportAsPDF()` を統一的な `export(.image)` / `export(.pdf)` API に
-  - `WebPage.exported(as:)` パターンに準拠
-- [ ] `UIScreen.main.scale` の直接参照を除去（deprecated）
+- [x] `exportAsImage()` / `exportAsPDF()` → `export(.image())` / `export(.pdf)` に統一
+  - `ExportFormat` enum で `.image(scale:)` / `.pdf` を定義
+- [x] `UIScreen.main.scale` → `canvasView?.traitCollection.displayScale` に置き換え
 
 ### 10. 型の整理・ネスト化
 
-- [ ] `DrawingTool` → `CanvasBoard.Tool` にネスト
-- [ ] `CanvasCoordinator` → `CanvasView.Coordinator` にネスト（UIViewRepresentable 慣習）
-- [ ] `CanvasGestureModifier` を `internal` にし、public API から隠す
+- [x] `DrawingTool` → `CanvasBoard.Tool` にネスト
+- [x] `CanvasCoordinator` → `CanvasView.Coordinator` にネスト（UIViewRepresentable 慣習）
+- [x] `CanvasGestureModifier` を `internal` にし、public API から隠す
 
 ---
 

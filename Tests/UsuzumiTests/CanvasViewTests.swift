@@ -42,6 +42,6 @@ struct CanvasViewTests {
 
         let coordinator = canvasView.makeCoordinator()
 
-        #expect(coordinator is CanvasCoordinator)
+        #expect(coordinator is CanvasView.Coordinator)
     }
 }

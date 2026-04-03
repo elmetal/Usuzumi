@@ -145,7 +145,7 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.isOpaque = configuration.isOpaque
         canvasView.tool = configuration.defaultTool
 
-        canvas.setupCanvasView(canvasView)
+        canvas.bind(to: canvasView)
         context.coordinator.canvas = canvas
         context.coordinator.onDrawingChange = onDrawingChange
         context.coordinator.onZoom = onZoom
@@ -174,15 +174,15 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.onZoom = onZoom
         context.coordinator.onScroll = onScroll
 
-        if isToolPickerVisible && canvas.toolPicker == nil {
+        if isToolPickerVisible && context.coordinator.toolPicker == nil {
             context.coordinator.showToolPicker(for: canvasView)
-        } else if !isToolPickerVisible && canvas.toolPicker != nil {
+        } else if !isToolPickerVisible && context.coordinator.toolPicker != nil {
             context.coordinator.hideToolPicker()
         }
     }
 
-    public func makeCoordinator() -> CanvasCoordinator {
-        CanvasCoordinator()
+    public func makeCoordinator() -> Coordinator {
+        Coordinator()
     }
 }
 

@@ -29,8 +29,8 @@ struct ContentView: View {
                             }
                             .disabled(!canvas.canRedo)
                             
-                            Button(action: { 
-                                if let image = canvas.exportAsImage() {
+                            Button(action: {
+                                if let image = canvas.export(.image()) as? UIImage {
                                     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
                                 }
                             }) {

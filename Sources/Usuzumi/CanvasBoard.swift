@@ -15,7 +15,7 @@ import PencilKit
 /// ## Topics
 ///
 /// ### Creating a Canvas Board
-/// - ``init()``
+/// - ``init(configuration:)``
 ///
 /// ### Managing Drawing State
 /// - ``isDrawing``
@@ -34,8 +34,8 @@ import PencilKit
 /// - ``redo()``
 ///
 /// ### Exporting Content
-/// - ``exportAsImage()``
-/// - ``exportAsPDF()``
+/// - ``ExportFormat``
+/// - ``export(_:)``
 @Observable
 @MainActor
 public final class CanvasBoard {
@@ -55,17 +55,16 @@ public final class CanvasBoard {
     ///
     /// This property provides direct access to the underlying `PKTool` instance.
     public var currentTool: PKTool = PKInkingTool(.pen, color: .black, width: 5)
-    /// The current drawing tool represented as a `DrawingTool` enum.
+    /// The current drawing tool represented as a ``Tool`` enum.
     ///
     /// This property provides a higher-level abstraction over `PKTool` for easier tool management.
-    public var currentDrawingTool: DrawingTool = .pen(color: .black, width: 5)
+    public var currentDrawingTool: Tool = .pen(color: .black, width: 5)
 
     /// The configuration used to create this canvas board.
     public let configuration: Configuration
 
-    @ObservationIgnored internal var canvasView: PKCanvasView?
-    @ObservationIgnored internal var toolPicker: PKToolPicker?
-
+    @ObservationIgnored private var isBound: Bool = false
+    @ObservationIgnored private var canvasView: PKCanvasView?
     @ObservationIgnored private var drawing: PKDrawing = PKDrawing()
 
     /// Creates a new canvas board instance with the specified configuration.
@@ -76,7 +75,7 @@ public final class CanvasBoard {
         self.currentTool = configuration.defaultTool
         self.currentDrawingTool = .pen(color: .black, width: 5)
     }
-    
+
     /// The drawing data that can be saved and restored.
     ///
     /// Use this property to persist drawings or transfer them between canvas instances.
@@ -100,7 +99,7 @@ public final class CanvasBoard {
             }
         }
     }
-    
+
     /// Clears all content from the canvas.
     ///
     /// This operation cannot be undone using the undo manager.
@@ -109,7 +108,7 @@ public final class CanvasBoard {
         canvasView?.drawing = drawing
         updateUndoRedoState()
     }
-    
+
     /// Performs an undo operation on the canvas.
     ///
     /// This method has no effect if ``canUndo`` is `false`.
@@ -117,7 +116,7 @@ public final class CanvasBoard {
         canvasView?.undoManager?.undo()
         updateUndoRedoState()
     }
-    
+
     /// Performs a redo operation on the canvas.
     ///
     /// This method has no effect if ``canRedo`` is `false`.
@@ -125,75 +124,104 @@ public final class CanvasBoard {
         canvasView?.undoManager?.redo()
         updateUndoRedoState()
     }
-    
-    /// Exports the current drawing as a UIImage.
-    ///
-    /// The exported image maintains the device's screen scale for optimal quality.
-    ///
-    /// - Returns: A `UIImage` representation of the drawing, or `nil` if the drawing is empty.
-    public func exportAsImage() -> UIImage? {
-        let bounds = drawing.bounds
-        return drawing.image(from: bounds, scale: UIScreen.main.scale)
+
+    /// The format for exporting a drawing.
+    public enum ExportFormat {
+        /// Export as a raster image.
+        case image(scale: CGFloat? = nil)
+        /// Export as a PDF document.
+        case pdf
     }
-    
-    /// Exports the current drawing as PDF data.
+
+    /// Exports the current drawing in the specified format.
     ///
-    /// The PDF is generated with metadata including the creator and title information.
+    /// - Parameter format: The export format to use.
+    /// - Returns: The exported content, or `nil` if the export fails.
     ///
-    /// - Returns: PDF data representation of the drawing, or `nil` if the export fails.
-    public func exportAsPDF() -> Data? {
+    /// ```swift
+    /// // Export as image at screen scale
+    /// let image = canvas.export(.image())
+    ///
+    /// // Export as image at custom scale
+    /// let hiResImage = canvas.export(.image(scale: 3.0))
+    ///
+    /// // Export as PDF
+    /// let pdfData = canvas.export(.pdf)
+    /// ```
+    public func export(_ format: ExportFormat) -> (any Sendable)? {
         let bounds = drawing.bounds
-        let pdfMetaData = [
-            kCGPDFContextCreator: "Usuzumi",
-            kCGPDFContextTitle: "Drawing"
-        ]
-        
-        let format = UIGraphicsPDFRendererFormat()
-        format.documentInfo = pdfMetaData as [String: Any]
-        
-        let renderer = UIGraphicsPDFRenderer(bounds: bounds, format: format)
-        
-        let data = renderer.pdfData { context in
-            context.beginPage()
-            
-            drawing.image(from: bounds, scale: 1.0).draw(in: bounds)
+        switch format {
+        case .image(let scale):
+            let displayScale = scale ?? (canvasView?.traitCollection.displayScale ?? 2.0)
+            return drawing.image(from: bounds, scale: displayScale)
+        case .pdf:
+            let pdfMetaData = [
+                kCGPDFContextCreator: "Usuzumi",
+                kCGPDFContextTitle: "Drawing"
+            ]
+            let rendererFormat = UIGraphicsPDFRendererFormat()
+            rendererFormat.documentInfo = pdfMetaData as [String: Any]
+            let renderer = UIGraphicsPDFRenderer(bounds: bounds, format: rendererFormat)
+            return renderer.pdfData { context in
+                context.beginPage()
+                drawing.image(from: bounds, scale: 1.0).draw(in: bounds)
+            }
         }
-        
-        return data
     }
-    
-    internal func updateUndoRedoState() {
-        canUndo = canvasView?.undoManager?.canUndo ?? false
-        canRedo = canvasView?.undoManager?.canRedo ?? false
-    }
-    
+
     /// Sets the active drawing tool.
     ///
-    /// This method updates both the high-level `DrawingTool` and the underlying `PKTool`.
+    /// This method updates both the high-level `Tool` and the underlying `PKTool`.
     /// For the ruler tool, it also activates the ruler mode on the canvas.
     ///
     /// - Parameter tool: The drawing tool to activate.
-    public func setTool(_ tool: DrawingTool) {
+    public func setTool(_ tool: Tool) {
         currentDrawingTool = tool
         currentTool = tool.pkTool
         canvasView?.tool = currentTool
-        
-        // Handle ruler state separately
+
         if case .ruler = tool {
             canvasView?.isRulerActive = true
         } else {
             canvasView?.isRulerActive = false
         }
     }
-    
-    internal func setDrawingState(_ isDrawing: Bool) {
-        self.isDrawing = isDrawing
-    }
-    
-    internal func setupCanvasView(_ canvasView: PKCanvasView) {
+
+    // MARK: - Internal (Coordinator access)
+
+    func bind(to canvasView: PKCanvasView) {
+        precondition(!isBound, "CanvasBoard is already bound to a CanvasView. A CanvasBoard can only be used with one CanvasView at a time.")
+        isBound = true
         self.canvasView = canvasView
         canvasView.drawing = drawing
         canvasView.tool = currentTool
         updateUndoRedoState()
+    }
+
+    func unbind() {
+        isBound = false
+        canvasView = nil
+    }
+
+    func updateUndoRedoState() {
+        canUndo = canvasView?.undoManager?.canUndo ?? false
+        canRedo = canvasView?.undoManager?.canRedo ?? false
+    }
+
+    func setDrawingState(_ isDrawing: Bool) {
+        self.isDrawing = isDrawing
+    }
+
+    func setToolFromPicker(_ tool: PKTool) {
+        currentTool = tool
+        canvasView?.tool = tool
+    }
+
+    func setRulerFromPicker(_ active: Bool) {
+        canvasView?.isRulerActive = active
+    }
+
+    var boundCanvasView: PKCanvasView? {
+        canvasView
     }
 }

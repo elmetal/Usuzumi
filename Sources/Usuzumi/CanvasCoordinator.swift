@@ -1,55 +1,52 @@
 import UIKit
 import PencilKit
 
-/// A coordinator that bridges PencilKit's UIKit components with SwiftUI.
-///
-/// ``CanvasCoordinator`` handles the communication between the canvas view,
-/// tool picker, and callback closures. It manages tool selection, drawing
-/// state changes, and view updates.
-///
-/// ## Overview
-///
-/// This class is automatically created and managed by ``CanvasView``. It serves
-/// as the delegate for both `PKCanvasView` and `PKToolPicker`, forwarding
-/// relevant events through callback closures set via view modifiers.
-@MainActor
-public class CanvasCoordinator: NSObject {
-    weak var canvas: CanvasBoard?
-    var onDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)?
-    var onZoom: (@MainActor @Sendable (CGFloat) -> Void)?
-    var onScroll: (@MainActor @Sendable (CGPoint) -> Void)?
-    private var lastContentOffset: CGPoint = .zero
-    private var lastZoomScale: CGFloat = 1.0
+extension CanvasView {
+    /// A coordinator that bridges PencilKit's UIKit components with SwiftUI.
+    ///
+    /// This class is automatically created and managed by ``CanvasView``. It serves
+    /// as the delegate for both `PKCanvasView` and `PKToolPicker`, forwarding
+    /// relevant events through callback closures set via view modifiers.
+    @MainActor
+    public class Coordinator: NSObject {
+        weak var canvas: CanvasBoard?
+        var onDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)?
+        var onZoom: (@MainActor @Sendable (CGFloat) -> Void)?
+        var onScroll: (@MainActor @Sendable (CGPoint) -> Void)?
+        private(set) var toolPicker: PKToolPicker?
+        private var lastContentOffset: CGPoint = .zero
+        private var lastZoomScale: CGFloat = 1.0
 
-    override init() {
-        super.init()
-    }
+        override init() {
+            super.init()
+        }
 
-    func showToolPicker(for canvasView: PKCanvasView) {
-        guard canvas?.toolPicker == nil else { return }
+        func showToolPicker(for canvasView: PKCanvasView) {
+            guard toolPicker == nil else { return }
 
-        let toolPicker = PKToolPicker()
-        toolPicker.setVisible(true, forFirstResponder: canvasView)
-        toolPicker.addObserver(canvasView)
-        toolPicker.addObserver(self)
-        canvasView.becomeFirstResponder()
+            let picker = PKToolPicker()
+            picker.setVisible(true, forFirstResponder: canvasView)
+            picker.addObserver(canvasView)
+            picker.addObserver(self)
+            canvasView.becomeFirstResponder()
 
-        canvas?.toolPicker = toolPicker
-    }
+            toolPicker = picker
+        }
 
-    func hideToolPicker() {
-        guard let toolPicker = canvas?.toolPicker,
-              let canvasView = canvas?.canvasView else { return }
+        func hideToolPicker() {
+            guard let picker = toolPicker,
+                  let canvasView = canvas?.boundCanvasView else { return }
 
-        toolPicker.setVisible(false, forFirstResponder: canvasView)
-        toolPicker.removeObserver(canvasView)
-        toolPicker.removeObserver(self)
+            picker.setVisible(false, forFirstResponder: canvasView)
+            picker.removeObserver(canvasView)
+            picker.removeObserver(self)
 
-        canvas?.toolPicker = nil
+            toolPicker = nil
+        }
     }
 }
 
-extension CanvasCoordinator: PKCanvasViewDelegate {
+extension CanvasView.Coordinator: PKCanvasViewDelegate {
     public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
         guard let canvas else { return }
         canvas.updateUndoRedoState()
@@ -81,14 +78,13 @@ extension CanvasCoordinator: PKCanvasViewDelegate {
     }
 }
 
-extension CanvasCoordinator: PKToolPickerObserver {
+extension CanvasView.Coordinator: PKToolPickerObserver {
     public func toolPickerSelectedToolDidChange(_ toolPicker: PKToolPicker) {
-        canvas?.currentTool = toolPicker.selectedTool
-        canvas?.canvasView?.tool = toolPicker.selectedTool
+        canvas?.setToolFromPicker(toolPicker.selectedTool)
     }
 
     public func toolPickerIsRulerActiveDidChange(_ toolPicker: PKToolPicker) {
-        canvas?.canvasView?.isRulerActive = toolPicker.isRulerActive
+        canvas?.setRulerFromPicker(toolPicker.isRulerActive)
     }
 
     public func toolPickerVisibilityDidChange(_ toolPicker: PKToolPicker) {
