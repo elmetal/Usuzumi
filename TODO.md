@@ -24,9 +24,9 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 3. CanvasView のイニシャライザ整理
 
-- [ ] 簡易イニシャライザ `CanvasView()` を追加（内部で CanvasBoard を自動生成）
+- [x] 簡易イニシャライザ `CanvasView()` を追加（内部で CanvasBoard を自動生成）
   - `WebView(url:)` 相当の、State オブジェクト不要な簡易 API
-- [ ] フルコントロール用 `CanvasView(_ canvas: CanvasBoard)` を用意
+- [x] フルコントロール用 `CanvasView(_ canvas: CanvasBoard)` を用意
   - `WebView(_ page: WebPage)` と同じパターン
   - `configuration` 引数は削除（CanvasBoard が所有するため）
 
@@ -35,8 +35,7 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 - [ ] struct コピーではなく SwiftUI `Environment` / `Preference` 経由の伝搬に変更
   - 現状: `var view = self; view.configuration.xxx = yyy` で struct を書き換えている
   - 目標: `.webViewBackForwardNavigationGestures(_:)` 等と同様の仕組み
-- [ ] modifier 名に `canvas` プレフィックスを付ける（名前空間の衝突回避）
-  - 例: `.canvasToolPickerVisible(_:)`, `.canvasRulerActive(_:)`, `.canvasScrollEnabled(_:)`
+- [x] ~~modifier 名に `canvas` プレフィックスを付ける~~ → 不要と判断、プレフィックスなしで進める
 - [ ] Configuration で確定すべき設定（init 時）と動的に変更可能な設定を分離
   - Configuration: `drawingPolicy`, `isOpaque`, `defaultTool`, zoom range
   - 動的設定（Environment）: `toolPickerVisible`, `rulerActive`, `backgroundColor`
@@ -86,7 +85,7 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 struct SimpleView: View {
     var body: some View {
         CanvasView()
-            .canvasToolPickerVisible(true)
+            .toolPickerVisible(true)
     }
 }
 
@@ -101,8 +100,8 @@ struct AdvancedView: View {
 
     var body: some View {
         CanvasView(canvas)
-            .canvasToolPickerVisible(true)
-            .canvasRulerActive(false)
+            .toolPickerVisible(true)
+            .rulerActive(false)
             .onCanvasDrawingChange { canvas in
                 autosave(canvas.drawingData)
             }

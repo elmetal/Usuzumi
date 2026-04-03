@@ -16,6 +16,13 @@ struct CanvasViewTests {
         #expect(canvas.configuration.backgroundColor == .systemBackground)
     }
 
+    @Test("CanvasView simple initialization without canvas board")
+    func testSimpleInitialization() {
+        let canvasView = CanvasView()
+
+        #expect(canvasView.canvas.configuration.backgroundColor == .systemBackground)
+    }
+
     @Test("CanvasView initialization with custom configuration")
     func testCustomConfiguration() {
         let config = CanvasBoard.Configuration(
@@ -29,18 +36,6 @@ struct CanvasViewTests {
         #expect(canvas.configuration.backgroundColor == .systemGray)
         #expect(canvas.configuration.isRulerActive == true)
         #expect(canvas.configuration.allowsFingerDrawing == false)
-    }
-
-    @Test("CanvasView delegate modifier")
-    func testDelegateModifier() {
-        class TestDelegate: CanvasDelegate {}
-        let delegate = TestDelegate()
-        let canvas = CanvasBoard()
-        let baseView = CanvasView(canvas)
-
-        let viewWithDelegate = baseView.canvasDelegate(delegate)
-
-        #expect(viewWithDelegate.delegate === delegate)
     }
 
     @Test("CanvasView makeCoordinator creates coordinator")

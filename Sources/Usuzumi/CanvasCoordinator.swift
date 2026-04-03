@@ -25,7 +25,7 @@ public class CanvasCoordinator: NSObject {
     private var lastContentOffset: CGPoint = .zero
     private var lastZoomScale: CGFloat = 1.0
     
-    init(delegate: CanvasDelegate?) {
+    init(delegate: CanvasDelegate? = nil) {
         self.delegate = delegate
         super.init()
     }
