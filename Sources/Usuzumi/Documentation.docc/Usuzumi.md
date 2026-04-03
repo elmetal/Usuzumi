@@ -4,7 +4,7 @@ A modern SwiftUI wrapper for PencilKit that simplifies drawing and sketching in 
 
 ## Overview
 
-Usuzumi provides a clean, SwiftUI-native interface to Apple's PencilKit framework, making it easy to add drawing capabilities to your iOS apps. Whether you're building a note-taking app, a digital whiteboard, or a creative drawing application, Usuzumi offers the tools you need.
+Usuzumi provides a clean, SwiftUI-native interface to Apple's PencilKit framework, making it easy to add drawing capabilities to your iOS apps. The API follows the same pattern as WebKit for SwiftUI: a `CanvasView` (View) paired with a `CanvasBoard` (State) and `CanvasBoard.Configuration`.
 
 ## Getting Started
 
@@ -14,16 +14,38 @@ To use Usuzumi in your project, first import the framework:
 import Usuzumi
 ```
 
-Then create a canvas view with a canvas board:
+### Simple Usage
+
+```swift
+var body: some View {
+    CanvasView()
+        .toolPickerVisible(true)
+}
+```
+
+### Full Control
 
 ```swift
 struct DrawingView: View {
-    @StateObject private var canvas = CanvasBoard()
-    
+    @State private var canvas = CanvasBoard(
+        configuration: .init(drawingPolicy: .pencilOnly)
+    )
+
     var body: some View {
-        CanvasView(canvas: canvas)
+        CanvasView(canvas)
             .toolPickerVisible(true)
-            .allowsFingerDrawing(true)
+            .rulerActive(false)
+            .onDrawingChange { canvas in
+                // Auto-save
+            }
     }
 }
 ```
+
+## Topics
+
+### Core Types
+- ``CanvasView``
+- ``CanvasBoard``
+- ``CanvasBoard/Configuration``
+- ``CanvasBoard/Tool``
