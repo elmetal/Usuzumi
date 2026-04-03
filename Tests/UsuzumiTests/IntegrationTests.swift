@@ -25,33 +25,29 @@ struct IntegrationTests {
         #expect(coordinator.canvas === canvas)
     }
 
-    @Test("Delegate integration with coordinator")
-    func testDelegateIntegration() {
-        class TestDelegate: CanvasDelegate {
-            var drawingChangedCount = 0
-
-            func canvasDrawingDidChange(_ canvas: Usuzumi.CanvasBoard) {
-                drawingChangedCount += 1
-            }
-        }
-
-        let delegate = TestDelegate()
-        let coordinator = CanvasCoordinator(delegate: delegate)
+    @Test("Drawing change callback through coordinator")
+    func testDrawingChangeCallback() {
+        let coordinator = CanvasCoordinator()
         let canvas = CanvasBoard()
         let pkCanvasView = PKCanvasView()
 
         coordinator.canvas = canvas
         canvas.setupCanvasView(pkCanvasView)
 
+        var changedCanvas: CanvasBoard?
+        coordinator.onDrawingChange = { canvas in
+            changedCanvas = canvas
+        }
+
         coordinator.canvasViewDrawingDidChange(pkCanvasView)
 
-        #expect(delegate.drawingChangedCount == 1)
+        #expect(changedCanvas === canvas)
     }
 
     @Test("CanvasBoard state updates through coordinator")
     func testCanvasStateUpdates() {
         let canvas = CanvasBoard()
-        let coordinator = CanvasCoordinator(delegate: nil)
+        let coordinator = CanvasCoordinator()
         let pkCanvasView = PKCanvasView()
 
         coordinator.canvas = canvas

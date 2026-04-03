@@ -16,7 +16,7 @@ struct UsuzumiTests {
         // Test that we can create instances
         let canvas = Usuzumi.CanvasBoard()
         let config = Usuzumi.CanvasBoard.Configuration.default
-        let coordinator = Usuzumi.CanvasCoordinator(delegate: nil)
+        let coordinator = Usuzumi.CanvasCoordinator()
 
         #expect(canvas is Usuzumi.CanvasBoard)
         #expect(config is Usuzumi.CanvasBoard.Configuration)

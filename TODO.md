@@ -41,12 +41,9 @@ PencilKit の UIViewRepresentable 実装で再現するための改善項目。
 
 ### 5. Delegate パターンの刷新
 
-- [ ] `CanvasDelegate` プロトコルを廃止し、クロージャ / AsyncSequence ベースに移行
-  - `WebPage` は delegate を使わず、AsyncSequence でイベントを返す
-- [ ] 描画イベントを `AsyncSequence` で提供
-  - 例: `for await event in canvas.drawingEvents { ... }`
-- [ ] または SwiftUI 的なコールバック modifier にする
-  - 例: `.onCanvasDrawingChange { ... }`, `.onCanvasZoom { ... }`
+- [x] `CanvasDelegate` プロトコルを廃止し、SwiftUI コールバック modifier に移行
+  - `.onDrawingChange { canvas in ... }`, `.onZoom { scale in ... }`, `.onScroll { offset in ... }`
+  - Environment ベースでクロージャを Coordinator に伝搬
 
 ### 6. CanvasBoard 内部実装の隠蔽
 

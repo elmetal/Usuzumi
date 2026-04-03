@@ -15,6 +15,18 @@ private struct CanvasBackgroundColorKey: EnvironmentKey {
     static let defaultValue: UIColor = .systemBackground
 }
 
+private struct OnDrawingChangeKey: EnvironmentKey {
+    static let defaultValue: (@MainActor @Sendable (CanvasBoard) -> Void)? = nil
+}
+
+private struct OnZoomKey: EnvironmentKey {
+    static let defaultValue: (@MainActor @Sendable (CGFloat) -> Void)? = nil
+}
+
+private struct OnScrollKey: EnvironmentKey {
+    static let defaultValue: (@MainActor @Sendable (CGPoint) -> Void)? = nil
+}
+
 extension EnvironmentValues {
     var canvasToolPickerVisible: Bool {
         get { self[CanvasToolPickerVisibleKey.self] }
@@ -29,6 +41,21 @@ extension EnvironmentValues {
     var canvasBackgroundColor: UIColor {
         get { self[CanvasBackgroundColorKey.self] }
         set { self[CanvasBackgroundColorKey.self] = newValue }
+    }
+
+    var onCanvasDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)? {
+        get { self[OnDrawingChangeKey.self] }
+        set { self[OnDrawingChangeKey.self] = newValue }
+    }
+
+    var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? {
+        get { self[OnZoomKey.self] }
+        set { self[OnZoomKey.self] = newValue }
+    }
+
+    var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? {
+        get { self[OnScrollKey.self] }
+        set { self[OnScrollKey.self] = newValue }
     }
 }
 
@@ -64,7 +91,9 @@ extension EnvironmentValues {
 ///         CanvasView(canvas)
 ///             .toolPickerVisible(true)
 ///             .rulerActive(false)
-///             .backgroundColor(.white)
+///             .onDrawingChange { canvas in
+///                 autosave(canvas.drawingData)
+///             }
 ///     }
 /// }
 /// ```
@@ -81,6 +110,9 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.canvasToolPickerVisible) private var isToolPickerVisible
     @Environment(\.canvasRulerActive) private var isRulerActive
     @Environment(\.canvasBackgroundColor) private var backgroundColor
+    @Environment(\.onCanvasDrawingChange) private var onDrawingChange
+    @Environment(\.onCanvasZoom) private var onZoom
+    @Environment(\.onCanvasScroll) private var onScroll
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -115,6 +147,9 @@ public struct CanvasView: UIViewRepresentable {
 
         canvas.setupCanvasView(canvasView)
         context.coordinator.canvas = canvas
+        context.coordinator.onDrawingChange = onDrawingChange
+        context.coordinator.onZoom = onZoom
+        context.coordinator.onScroll = onScroll
 
         if isToolPickerVisible {
             context.coordinator.showToolPicker(for: canvasView)
@@ -134,6 +169,10 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.isScrollEnabled = configuration.isScrollEnabled
         canvasView.isOpaque = configuration.isOpaque
         canvasView.tool = canvas.currentTool
+
+        context.coordinator.onDrawingChange = onDrawingChange
+        context.coordinator.onZoom = onZoom
+        context.coordinator.onScroll = onScroll
 
         if isToolPickerVisible && canvas.toolPicker == nil {
             context.coordinator.showToolPicker(for: canvasView)
@@ -169,5 +208,26 @@ public extension View {
     /// - Parameter color: The background color to apply.
     func backgroundColor(_ color: UIColor) -> some View {
         environment(\.canvasBackgroundColor, color)
+    }
+
+    /// Adds an action to perform when the drawing content changes.
+    ///
+    /// - Parameter action: A closure called with the canvas board when the drawing changes.
+    func onDrawingChange(_ action: @MainActor @Sendable @escaping (CanvasBoard) -> Void) -> some View {
+        environment(\.onCanvasDrawingChange, action)
+    }
+
+    /// Adds an action to perform when the canvas zoom scale changes.
+    ///
+    /// - Parameter action: A closure called with the new zoom scale.
+    func onZoom(_ action: @MainActor @Sendable @escaping (CGFloat) -> Void) -> some View {
+        environment(\.onCanvasZoom, action)
+    }
+
+    /// Adds an action to perform when the canvas scroll position changes.
+    ///
+    /// - Parameter action: A closure called with the new scroll offset.
+    func onScroll(_ action: @MainActor @Sendable @escaping (CGPoint) -> Void) -> some View {
+        environment(\.onCanvasScroll, action)
     }
 }
