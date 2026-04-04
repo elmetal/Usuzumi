@@ -1,17 +1,17 @@
-# ``Usuzumi``
+# ``Eginu``
 
 A modern SwiftUI wrapper for PencilKit that simplifies drawing and sketching in iOS applications.
 
 ## Overview
 
-Usuzumi provides a clean, SwiftUI-native interface to Apple's PencilKit framework, making it easy to add drawing capabilities to your iOS apps. The API follows the same pattern as WebKit for SwiftUI: a `CanvasView` (View) paired with a `CanvasBoard` (State) and `CanvasBoard.Configuration`.
+Eginu provides a clean, SwiftUI-native interface to Apple's PencilKit framework, making it easy to add drawing capabilities to your iOS apps. The API follows the same pattern as WebKit for SwiftUI: a `CanvasView` (View) paired with a `CanvasBoard` (State) and `CanvasBoard.Configuration`.
 
 ## Getting Started
 
-To use Usuzumi in your project, first import the framework:
+To use Eginu in your project, first import the framework:
 
 ```swift
-import Usuzumi
+import Eginu
 ```
 
 ### Simple Usage

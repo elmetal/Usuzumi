@@ -1,7 +1,7 @@
 import Testing
 import UIKit
 import PencilKit
-@testable import Usuzumi
+@testable import Eginu
 
 @Suite("CanvasView.Coordinator Tests")
 @MainActor

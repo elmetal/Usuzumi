@@ -31,14 +31,14 @@ jobs:
     - name: Build DocC Documentation
       run: |
           xcodebuild docbuild \
-            -scheme Usuzumi \
+            -scheme Eginu \
             -destination "generic/platform=iOS" \
             -derivedDataPath DerivedData
 
           $(xcrun --find docc) process-archive \
-             transform-for-static-hosting DerivedData/Build/Products/Debug-*/Usuzumi.doccarchive \
+             transform-for-static-hosting DerivedData/Build/Products/Debug-*/Eginu.doccarchive \
              --output-path ./docs \
-             --hosting-base-path "Usuzumi"
+             --hosting-base-path "SwiftEginu"
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
@@ -54,7 +54,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}documentation/usuzumi/
+      url: ${{ steps.deployment.outputs.page_url }}documentation/eginu/
       
     steps:
     - name: Deploy to GitHub Pages

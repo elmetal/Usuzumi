@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Usuzumi",
+    name: "Eginu",
     platforms: [
         .iOS(.v17),
         .macCatalyst(.v17)
@@ -12,17 +12,17 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Usuzumi",
-            targets: ["Usuzumi"]),
+            name: "Eginu",
+            targets: ["Eginu"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Usuzumi"),
+            name: "Eginu"),
         .testTarget(
-            name: "UsuzumiTests",
-            dependencies: ["Usuzumi"]
+            name: "EginuTests",
+            dependencies: ["Eginu"]
         ),
     ]
 )

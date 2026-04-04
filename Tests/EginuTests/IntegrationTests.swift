@@ -1,7 +1,7 @@
 import Testing
 import SwiftUI
 import PencilKit
-@testable import Usuzumi
+@testable import Eginu
 
 @Suite("Integration Tests")
 @MainActor

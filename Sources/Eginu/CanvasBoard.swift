@@ -122,7 +122,7 @@ public final class CanvasBoard {
         syncDrawingFromCanvas()
         let bounds = drawing.bounds
         let pdfMetaData = [
-            kCGPDFContextCreator: "Usuzumi",
+            kCGPDFContextCreator: "Eginu",
             kCGPDFContextTitle: "Drawing"
         ]
         let format = UIGraphicsPDFRendererFormat()
