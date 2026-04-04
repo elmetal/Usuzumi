@@ -6,7 +6,7 @@ import PencilKit
 extension EnvironmentValues {
     @Entry var canvasToolPickerVisible: Bool = false
     @Entry var canvasRulerActive: Bool = false
-    @Entry var canvasBackgroundColor: UIColor = .systemBackground
+    @Entry var canvasBackgroundColor: Color = Color(uiColor: .systemBackground)
     @Entry var onCanvasDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)? = nil
     @Entry var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? = nil
     @Entry var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? = nil
@@ -99,7 +99,7 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.tool = configuration.defaultTool
 
         // Dynamic settings from Environment
-        canvasView.backgroundColor = backgroundColor
+        canvasView.backgroundColor = UIColor(backgroundColor)
         canvasView.isRulerActive = isRulerActive
 
         canvas.bind(to: canvasView)
@@ -114,7 +114,7 @@ public struct CanvasView: UIViewRepresentable {
 
     public func updateUIView(_ canvasView: PKCanvasView, context: Context) {
         // Only update dynamic (Environment-driven) properties
-        canvasView.backgroundColor = backgroundColor
+        canvasView.backgroundColor = UIColor(backgroundColor)
         canvasView.isRulerActive = isRulerActive
 
         context.coordinator.onDrawingChange = onDrawingChange
@@ -153,7 +153,7 @@ public extension View {
     /// Sets the background color of the canvas.
     ///
     /// - Parameter color: The background color to apply.
-    func backgroundColor(_ color: UIColor) -> some View {
+    func backgroundColor(_ color: Color) -> some View {
         environment(\.canvasBackgroundColor, color)
     }
 
