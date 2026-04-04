@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "Eginu",
     platforms: [
-        .iOS(.v17),
-        .macCatalyst(.v17)
+        .iOS(.v18),
+        .macCatalyst(.v18)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.

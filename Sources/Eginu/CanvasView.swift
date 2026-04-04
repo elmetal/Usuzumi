@@ -3,60 +3,13 @@ import PencilKit
 
 // MARK: - Environment Keys
 
-private struct CanvasToolPickerVisibleKey: EnvironmentKey {
-    static let defaultValue: Bool = false
-}
-
-private struct CanvasRulerActiveKey: EnvironmentKey {
-    static let defaultValue: Bool = false
-}
-
-private struct CanvasBackgroundColorKey: EnvironmentKey {
-    static let defaultValue: UIColor = .systemBackground
-}
-
-private struct OnDrawingChangeKey: EnvironmentKey {
-    static let defaultValue: (@MainActor @Sendable (CanvasBoard) -> Void)? = nil
-}
-
-private struct OnZoomKey: EnvironmentKey {
-    static let defaultValue: (@MainActor @Sendable (CGFloat) -> Void)? = nil
-}
-
-private struct OnScrollKey: EnvironmentKey {
-    static let defaultValue: (@MainActor @Sendable (CGPoint) -> Void)? = nil
-}
-
 extension EnvironmentValues {
-    var canvasToolPickerVisible: Bool {
-        get { self[CanvasToolPickerVisibleKey.self] }
-        set { self[CanvasToolPickerVisibleKey.self] = newValue }
-    }
-
-    var canvasRulerActive: Bool {
-        get { self[CanvasRulerActiveKey.self] }
-        set { self[CanvasRulerActiveKey.self] = newValue }
-    }
-
-    var canvasBackgroundColor: UIColor {
-        get { self[CanvasBackgroundColorKey.self] }
-        set { self[CanvasBackgroundColorKey.self] = newValue }
-    }
-
-    var onCanvasDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)? {
-        get { self[OnDrawingChangeKey.self] }
-        set { self[OnDrawingChangeKey.self] = newValue }
-    }
-
-    var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? {
-        get { self[OnZoomKey.self] }
-        set { self[OnZoomKey.self] = newValue }
-    }
-
-    var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? {
-        get { self[OnScrollKey.self] }
-        set { self[OnScrollKey.self] = newValue }
-    }
+    @Entry var canvasToolPickerVisible: Bool = false
+    @Entry var canvasRulerActive: Bool = false
+    @Entry var canvasBackgroundColor: UIColor = .systemBackground
+    @Entry var onCanvasDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)? = nil
+    @Entry var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? = nil
+    @Entry var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? = nil
 }
 
 // MARK: - CanvasView
