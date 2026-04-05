@@ -49,3 +49,6 @@ struct DrawingView: View {
 - ``CanvasBoard``
 - ``CanvasBoard/Configuration``
 - ``CanvasBoard/Tool``
+
+### PencilKit Compatibility
+- <doc:PencilKitCoverage>
