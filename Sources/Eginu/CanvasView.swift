@@ -12,6 +12,7 @@ extension EnvironmentValues {
     @Entry var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? = nil
     @Entry var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? = nil
     @Entry var onCanvasFinishRendering: (@MainActor @Sendable () -> Void)? = nil
+    @Entry var canvasShowsDrawingPolicyControls: Bool = true
 }
 
 // MARK: - CanvasView
@@ -70,6 +71,7 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.onCanvasZoom) private var onZoom
     @Environment(\.onCanvasScroll) private var onScroll
     @Environment(\.onCanvasFinishRendering) private var onFinishRendering
+    @Environment(\.canvasShowsDrawingPolicyControls) private var showsDrawingPolicyControls
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -133,6 +135,8 @@ public struct CanvasView: UIViewRepresentable {
         } else if !isToolPickerVisible && context.coordinator.toolPicker != nil {
             context.coordinator.hideToolPicker()
         }
+
+        context.coordinator.toolPicker?.showsDrawingPolicyControls = showsDrawingPolicyControls
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -150,6 +154,16 @@ public extension View {
     /// - Parameter enabled: A Boolean value that determines whether drawing is enabled.
     func drawingEnabled(_ enabled: Bool) -> some View {
         environment(\.canvasDrawingEnabled, enabled)
+    }
+
+    /// Controls whether the tool picker shows the drawing policy controls.
+    ///
+    /// When visible, the tool picker displays a toggle that lets users choose
+    /// whether to draw with their finger.
+    ///
+    /// - Parameter visible: A Boolean value that determines whether the drawing policy controls are shown.
+    func showsDrawingPolicyControls(_ visible: Bool) -> some View {
+        environment(\.canvasShowsDrawingPolicyControls, visible)
     }
 
     /// Controls the visibility of the PencilKit tool picker.
