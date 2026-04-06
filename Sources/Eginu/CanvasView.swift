@@ -11,6 +11,7 @@ extension EnvironmentValues {
     @Entry var onCanvasDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)? = nil
     @Entry var onCanvasZoom: (@MainActor @Sendable (CGFloat) -> Void)? = nil
     @Entry var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? = nil
+    @Entry var onCanvasFinishRendering: (@MainActor @Sendable () -> Void)? = nil
 }
 
 // MARK: - CanvasView
@@ -68,6 +69,7 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.onCanvasDrawingChange) private var onDrawingChange
     @Environment(\.onCanvasZoom) private var onZoom
     @Environment(\.onCanvasScroll) private var onScroll
+    @Environment(\.onCanvasFinishRendering) private var onFinishRendering
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -124,6 +126,7 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.onDrawingChange = onDrawingChange
         context.coordinator.onZoom = onZoom
         context.coordinator.onScroll = onScroll
+        context.coordinator.onFinishRendering = onFinishRendering
 
         if isToolPickerVisible && context.coordinator.toolPicker == nil {
             context.coordinator.showToolPicker(for: canvasView)
@@ -189,5 +192,15 @@ public extension View {
     /// - Parameter action: A closure called with the new scroll offset.
     func onScroll(_ action: @MainActor @Sendable @escaping (CGPoint) -> Void) -> some View {
         environment(\.onCanvasScroll, action)
+    }
+
+    /// Adds an action to perform when the canvas finishes rendering its drawing content.
+    ///
+    /// Use this to time operations like thumbnail generation or image export
+    /// that depend on the canvas having fully rendered.
+    ///
+    /// - Parameter action: A closure called when rendering completes.
+    func onFinishRendering(_ action: @MainActor @Sendable @escaping () -> Void) -> some View {
+        environment(\.onCanvasFinishRendering, action)
     }
 }

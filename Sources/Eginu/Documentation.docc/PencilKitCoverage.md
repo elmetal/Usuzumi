@@ -29,7 +29,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | `canvasViewDidEndUsingTool(_:)` | ✓ | ``CanvasBoard/isDrawing`` |
 | `canvasViewDidZoom(_:)` | ✓ | `CanvasView.onZoom(_:)` |
 | `canvasViewDidScroll(_:)` | ✓ | `CanvasView.onScroll(_:)` |
-| `canvasViewDidFinishRendering(_:)` | — | — |
+| `canvasViewDidFinishRendering(_:)` | ✓ | `CanvasView.onFinishRendering(_:)` |
 | `canvasViewDidRefineStrokes(_:strokes:newStrokes:)` (iOS 18.1) | — | — |
 
 ## PKDrawing

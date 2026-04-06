@@ -13,6 +13,7 @@ extension CanvasView {
         var onDrawingChange: (@MainActor @Sendable (CanvasBoard) -> Void)?
         var onZoom: (@MainActor @Sendable (CGFloat) -> Void)?
         var onScroll: (@MainActor @Sendable (CGPoint) -> Void)?
+        var onFinishRendering: (@MainActor @Sendable () -> Void)?
         private(set) var toolPicker: PKToolPicker?
         private var lastContentOffset: CGPoint = .zero
         private var lastZoomScale: CGFloat = 1.0
@@ -75,6 +76,10 @@ extension CanvasView.Coordinator: PKCanvasViewDelegate {
             lastContentOffset = newOffset
             onScroll?(newOffset)
         }
+    }
+
+    public func canvasViewDidFinishRendering(_ canvasView: PKCanvasView) {
+        onFinishRendering?()
     }
 }
 
