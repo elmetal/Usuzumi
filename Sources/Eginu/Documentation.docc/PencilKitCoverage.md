@@ -38,12 +38,11 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 |---|---|---|
 | `init(data:)` / `dataRepresentation()` | ✓ | ``CanvasBoard/drawingData`` |
 | `image(from:scale:)` | ✓ | ``CanvasBoard/exportImage(scale:)`` |
-| `strokes` (iOS 14) | — | — |
+| `strokes` (iOS 14) | ✓ | ``CanvasBoard/strokes`` |
 | `init(strokes:)` (iOS 14) | — | — |
-| `transformed(using:)` | — | — |
-| `appending(_:)` | — | — |
-| `replacing(_:with:)` (iOS 14) | — | — |
-| `bounds` | — | — |
+| `transformed(using:)` | ✓ | ``CanvasBoard/transformDrawing(using:)`` |
+| `appending(_:)` | ✓ | ``CanvasBoard/appendDrawing(_:)``, ``CanvasBoard/appendStrokes(_:)`` |
+| `bounds` | ✓ | ``CanvasBoard/drawingBounds`` |
 | `requiredContentVersion` (iOS 17) | — | — |
 
 ## PKToolPicker

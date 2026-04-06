@@ -22,6 +22,13 @@ import PencilKit
 /// - ``drawingData``
 /// - ``clear()``
 ///
+/// ### Drawing Operations
+/// - ``strokes``
+/// - ``drawingBounds``
+/// - ``transformDrawing(using:)``
+/// - ``appendDrawing(_:)``
+/// - ``appendStrokes(_:)``
+///
 /// ### Tool Management
 /// - ``currentTool``
 /// - ``setTool(_:)``
@@ -132,6 +139,46 @@ public final class CanvasBoard {
             context.beginPage()
             drawing.image(from: bounds, scale: 1.0).draw(in: bounds)
         }
+    }
+
+    /// The strokes that make up the current drawing.
+    public var strokes: [PKStroke] {
+        syncDrawingFromCanvas()
+        return drawing.strokes
+    }
+
+    /// The bounds of the current drawing.
+    public var drawingBounds: CGRect {
+        syncDrawingFromCanvas()
+        return drawing.bounds
+    }
+
+    /// Applies an affine transform to the current drawing.
+    ///
+    /// - Parameter transform: The affine transform to apply.
+    public func transformDrawing(using transform: CGAffineTransform) {
+        syncDrawingFromCanvas()
+        drawing = drawing.transformed(using: transform)
+        canvasView?.drawing = drawing
+    }
+
+    /// Appends another drawing's content to the current drawing.
+    ///
+    /// - Parameter other: The drawing data to append.
+    public func appendDrawing(_ other: Data) throws {
+        syncDrawingFromCanvas()
+        let otherDrawing = try PKDrawing(data: other)
+        drawing.append(otherDrawing)
+        canvasView?.drawing = drawing
+    }
+
+    /// Appends strokes to the current drawing.
+    ///
+    /// - Parameter strokes: The strokes to append.
+    public func appendStrokes(_ strokes: [PKStroke]) {
+        syncDrawingFromCanvas()
+        drawing = drawing.appending(PKDrawing(strokes: strokes))
+        canvasView?.drawing = drawing
     }
 
     /// Sets the active drawing tool.
