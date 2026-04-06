@@ -16,6 +16,8 @@ extension EnvironmentValues {
     @Entry var canvasToolPickerAutosaveName: String? = nil
     @Entry var canvasToolPickerColorUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
     @Entry var canvasToolPickerOverrideUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
+    @Entry var onCanvasToolPickerVisibilityChange: (@MainActor @Sendable (Bool) -> Void)? = nil
+    @Entry var onCanvasToolPickerFramesObscuredChange: (@MainActor @Sendable (CGRect) -> Void)? = nil
 }
 
 // MARK: - CanvasView
@@ -78,6 +80,8 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.canvasToolPickerAutosaveName) private var toolPickerAutosaveName
     @Environment(\.canvasToolPickerColorUserInterfaceStyle) private var toolPickerColorStyle
     @Environment(\.canvasToolPickerOverrideUserInterfaceStyle) private var toolPickerOverrideStyle
+    @Environment(\.onCanvasToolPickerVisibilityChange) private var onToolPickerVisibilityChange
+    @Environment(\.onCanvasToolPickerFramesObscuredChange) private var onToolPickerFramesObscuredChange
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -149,6 +153,8 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.toolPicker?.stateAutosaveName = toolPickerAutosaveName
         context.coordinator.toolPicker?.colorUserInterfaceStyle = toolPickerColorStyle
         context.coordinator.toolPicker?.overrideUserInterfaceStyle = toolPickerOverrideStyle
+        context.coordinator.onToolPickerVisibilityChange = onToolPickerVisibilityChange
+        context.coordinator.onToolPickerFramesObscuredChange = onToolPickerFramesObscuredChange
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -255,5 +261,22 @@ public extension View {
     /// - Parameter action: A closure called when rendering completes.
     func onFinishRendering(_ action: @MainActor @Sendable @escaping () -> Void) -> some View {
         environment(\.onCanvasFinishRendering, action)
+    }
+
+    /// Adds an action to perform when the tool picker's visibility changes.
+    ///
+    /// - Parameter action: A closure called with `true` when the tool picker becomes visible,
+    ///   or `false` when it hides.
+    func onToolPickerVisibilityChange(_ action: @MainActor @Sendable @escaping (Bool) -> Void) -> some View {
+        environment(\.onCanvasToolPickerVisibilityChange, action)
+    }
+
+    /// Adds an action to perform when the tool picker's obscured frame changes.
+    ///
+    /// Use this to adjust your layout when the tool picker overlaps content.
+    ///
+    /// - Parameter action: A closure called with the obscured rect in the canvas view's coordinate space.
+    func onToolPickerFramesObscuredChange(_ action: @MainActor @Sendable @escaping (CGRect) -> Void) -> some View {
+        environment(\.onCanvasToolPickerFramesObscuredChange, action)
     }
 }

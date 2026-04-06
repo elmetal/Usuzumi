@@ -14,6 +14,8 @@ extension CanvasView {
         var onZoom: (@MainActor @Sendable (CGFloat) -> Void)?
         var onScroll: (@MainActor @Sendable (CGPoint) -> Void)?
         var onFinishRendering: (@MainActor @Sendable () -> Void)?
+        var onToolPickerVisibilityChange: (@MainActor @Sendable (Bool) -> Void)?
+        var onToolPickerFramesObscuredChange: (@MainActor @Sendable (CGRect) -> Void)?
         private(set) var toolPicker: PKToolPicker?
         private var lastContentOffset: CGPoint = .zero
         private var lastZoomScale: CGFloat = 1.0
@@ -93,8 +95,11 @@ extension CanvasView.Coordinator: PKToolPickerObserver {
     }
 
     public func toolPickerVisibilityDidChange(_ toolPicker: PKToolPicker) {
+        onToolPickerVisibilityChange?(toolPicker.isVisible)
     }
 
     public func toolPickerFramesObscuredDidChange(_ toolPicker: PKToolPicker) {
+        guard let canvasView = canvas?.boundCanvasView else { return }
+        onToolPickerFramesObscuredChange?(toolPicker.frameObscured(in: canvasView))
     }
 }

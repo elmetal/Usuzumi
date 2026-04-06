@@ -67,8 +67,8 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 |---|---|---|
 | `toolPickerSelectedToolDidChange(_:)` | ✓ | ``CanvasBoard/currentTool`` (auto-sync) |
 | `toolPickerIsRulerActiveDidChange(_:)` | ✓ | Auto-sync with `CanvasView.rulerActive(_:)` |
-| `toolPickerVisibilityDidChange(_:)` | — | — |
-| `toolPickerFramesObscuredDidChange(_:)` | — | — |
+| `toolPickerVisibilityDidChange(_:)` | ✓ | `CanvasView.onToolPickerVisibilityChange(_:)` |
+| `toolPickerFramesObscuredDidChange(_:)` | ✓ | `CanvasView.onToolPickerFramesObscuredChange(_:)` |
 | `toolPickerSelectedToolItemDidChange(_:)` (iOS 18) | — | — |
 
 ## Tool Types
