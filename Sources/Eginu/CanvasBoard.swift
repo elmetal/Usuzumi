@@ -81,9 +81,8 @@ public final class CanvasBoard {
         }
         set {
             do {
-                drawing = try PKDrawing(data: newValue)
-                canvasView?.drawing = drawing
-                updateUndoRedoState()
+                let newDrawing = try PKDrawing(data: newValue)
+                applyDrawing { $0 = newDrawing }
             } catch {
                 // Invalid drawing data is silently ignored
             }
@@ -92,9 +91,7 @@ public final class CanvasBoard {
 
     /// Clears all content from the canvas.
     public func clear() {
-        drawing = PKDrawing()
-        canvasView?.drawing = drawing
-        updateUndoRedoState()
+        applyDrawing { $0 = PKDrawing() }
     }
 
     /// Performs an undo operation on the canvas.
@@ -157,28 +154,29 @@ public final class CanvasBoard {
     ///
     /// - Parameter transform: The affine transform to apply.
     public func transformDrawing(using transform: CGAffineTransform) {
-        syncDrawingFromCanvas()
-        drawing = drawing.transformed(using: transform)
-        canvasView?.drawing = drawing
+        applyDrawing { $0 = $0.transformed(using: transform) }
     }
 
-    /// Appends another drawing's content to the current drawing.
+    /// Appends another drawing to the current drawing.
     ///
-    /// - Parameter other: The drawing data to append.
-    public func appendDrawing(_ other: Data) throws {
-        syncDrawingFromCanvas()
-        let otherDrawing = try PKDrawing(data: other)
-        drawing.append(otherDrawing)
-        canvasView?.drawing = drawing
+    /// - Parameter other: The drawing to append.
+    public func appendDrawing(_ other: PKDrawing) {
+        applyDrawing { $0.append(other) }
+    }
+
+    /// Appends another drawing from its data representation.
+    ///
+    /// - Parameter data: The drawing data to append.
+    public func appendDrawing(_ data: Data) throws {
+        let otherDrawing = try PKDrawing(data: data)
+        appendDrawing(otherDrawing)
     }
 
     /// Appends strokes to the current drawing.
     ///
     /// - Parameter strokes: The strokes to append.
     public func appendStrokes(_ strokes: [PKStroke]) {
-        syncDrawingFromCanvas()
-        drawing = drawing.appending(PKDrawing(strokes: strokes))
-        canvasView?.drawing = drawing
+        applyDrawing { $0 = $0.appending(PKDrawing(strokes: strokes)) }
     }
 
     /// Sets the active drawing tool.
@@ -201,6 +199,13 @@ public final class CanvasBoard {
         if let canvasView {
             drawing = canvasView.drawing
         }
+    }
+
+    private func applyDrawing(_ mutate: (inout PKDrawing) -> Void) {
+        syncDrawingFromCanvas()
+        mutate(&drawing)
+        canvasView?.drawing = drawing
+        updateUndoRedoState()
     }
 
     func bind(to canvasView: PKCanvasView) {
