@@ -38,6 +38,13 @@ extension CanvasBoard {
         /// The drawing policy that determines which input methods are allowed.
         public let drawingPolicy: PKCanvasViewDrawingPolicy
 
+        /// The maximum PencilKit content version supported by the canvas.
+        ///
+        /// Use this to limit which ink types are available, ensuring drawings
+        /// remain compatible with older versions of your app or older devices.
+        /// When `nil`, the canvas supports all content versions available on the current OS.
+        public let maximumSupportedContentVersion: PKContentVersion?
+
         /// Creates a canvas configuration with the specified settings.
         public init(
             defaultTool: PKTool = PKInkingTool(.pen, color: .black, width: 5),
@@ -45,7 +52,8 @@ extension CanvasBoard {
             maximumZoomScale: CGFloat = 5.0,
             isScrollEnabled: Bool = true,
             isOpaque: Bool = true,
-            drawingPolicy: PKCanvasViewDrawingPolicy = .anyInput
+            drawingPolicy: PKCanvasViewDrawingPolicy = .anyInput,
+            maximumSupportedContentVersion: PKContentVersion? = nil
         ) {
             self.defaultTool = defaultTool
             self.minimumZoomScale = minimumZoomScale
@@ -53,6 +61,7 @@ extension CanvasBoard {
             self.isScrollEnabled = isScrollEnabled
             self.isOpaque = isOpaque
             self.drawingPolicy = drawingPolicy
+            self.maximumSupportedContentVersion = maximumSupportedContentVersion
         }
 
         /// The default canvas configuration.

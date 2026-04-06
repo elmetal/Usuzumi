@@ -105,6 +105,9 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.isScrollEnabled = configuration.isScrollEnabled
         canvasView.isOpaque = configuration.isOpaque
         canvasView.tool = configuration.defaultTool
+        if let contentVersion = configuration.maximumSupportedContentVersion {
+            canvasView.maximumSupportedContentVersion = contentVersion
+        }
 
         // Dynamic settings from Environment
         canvasView.isDrawingEnabled = isDrawingEnabled

@@ -18,7 +18,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | `undoManager` | ✓ | ``CanvasBoard/undo()``, ``CanvasBoard/redo()``, ``CanvasBoard/canUndo``, ``CanvasBoard/canRedo`` |
 | `isDrawingEnabled` (iOS 18) | ✓ | `CanvasView.drawingEnabled(_:)` |
 | `drawingGestureRecognizer` | — | — |
-| `maximumSupportedContentVersion` (iOS 17) | — | — |
+| `maximumSupportedContentVersion` (iOS 17) | ✓ | ``CanvasBoard/Configuration/maximumSupportedContentVersion`` |
 
 ## PKCanvasViewDelegate
 
