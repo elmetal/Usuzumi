@@ -88,7 +88,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | Property / Method | Status | Eginu API |
 |---|---|---|
 | `eraserType` (vector, bitmap, fixedWidthBitmap) | ✓ | ``CanvasBoard/Tool/EraserType`` |
-| `width` (iOS 16.4) | — | — |
+| `width` (iOS 16.4) | ✓ | ``CanvasBoard/Tool/eraser(type:width:)`` |
 
 ### PKLassoTool
 

@@ -38,8 +38,8 @@ extension CanvasBoard {
         /// A fountain pen tool with customizable color and width.
         case fountainPen(color: Color, width: CGFloat)
 
-        /// An eraser tool with a specific eraser type.
-        case eraser(type: EraserType)
+        /// An eraser tool with a specific eraser type and optional width.
+        case eraser(type: EraserType, width: CGFloat? = nil)
 
         /// A lasso selection tool for selecting and moving drawings.
         case lasso
@@ -76,14 +76,16 @@ extension CanvasBoard {
                 return PKInkingTool(.monoline, color: UIColor(color), width: width)
             case .fountainPen(let color, let width):
                 return PKInkingTool(.fountainPen, color: UIColor(color), width: width)
-            case .eraser(let type):
-                switch type {
-                case .vector:
-                    return PKEraserTool(.vector)
-                case .bitmap:
-                    return PKEraserTool(.bitmap)
-                case .fixedWidthBitmap:
-                    return PKEraserTool(.fixedWidthBitmap)
+            case .eraser(let type, let width):
+                let eraserType: PKEraserTool.EraserType = switch type {
+                case .vector: .vector
+                case .bitmap: .bitmap
+                case .fixedWidthBitmap: .fixedWidthBitmap
+                }
+                if let width {
+                    return PKEraserTool(eraserType, width: width)
+                } else {
+                    return PKEraserTool(eraserType)
                 }
             case .lasso:
                 return PKLassoTool()
@@ -118,7 +120,7 @@ extension CanvasBoard {
             case .watercolor: return "Watercolor"
             case .monoline: return "Monoline"
             case .fountainPen: return "Fountain Pen"
-            case .eraser(let type): return "Eraser (\(type.rawValue))"
+            case .eraser(let type, _): return "Eraser (\(type.rawValue))"
             case .lasso: return "Lasso"
             case .ruler: return "Ruler"
             }
@@ -162,5 +164,10 @@ public extension CanvasBoard.Tool {
     /// A default vector eraser tool.
     static var eraser: CanvasBoard.Tool {
         .eraser(type: .vector)
+    }
+
+    /// Creates an eraser tool with the specified type and width.
+    static func eraser(_ type: EraserType, width: CGFloat) -> CanvasBoard.Tool {
+        .eraser(type: type, width: width)
     }
 }
