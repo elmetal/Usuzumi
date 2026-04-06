@@ -4,6 +4,7 @@ import PencilKit
 // MARK: - Environment Keys
 
 extension EnvironmentValues {
+    @Entry var canvasDrawingEnabled: Bool = true
     @Entry var canvasToolPickerVisible: Bool = false
     @Entry var canvasRulerActive: Bool = false
     @Entry var canvasBackgroundColor: Color = Color(uiColor: .systemBackground)
@@ -60,6 +61,7 @@ public struct CanvasView: UIViewRepresentable {
     /// The canvas board that manages the drawing state.
     public var canvas: CanvasBoard
 
+    @Environment(\.canvasDrawingEnabled) private var isDrawingEnabled
     @Environment(\.canvasToolPickerVisible) private var isToolPickerVisible
     @Environment(\.canvasRulerActive) private var isRulerActive
     @Environment(\.canvasBackgroundColor) private var backgroundColor
@@ -99,6 +101,7 @@ public struct CanvasView: UIViewRepresentable {
         canvasView.tool = configuration.defaultTool
 
         // Dynamic settings from Environment
+        canvasView.isDrawingEnabled = isDrawingEnabled
         canvasView.backgroundColor = UIColor(backgroundColor)
         canvasView.isRulerActive = isRulerActive
 
@@ -114,6 +117,7 @@ public struct CanvasView: UIViewRepresentable {
 
     public func updateUIView(_ canvasView: PKCanvasView, context: Context) {
         // Only update dynamic (Environment-driven) properties
+        canvasView.isDrawingEnabled = isDrawingEnabled
         canvasView.backgroundColor = UIColor(backgroundColor)
         canvasView.isRulerActive = isRulerActive
 
@@ -136,6 +140,15 @@ public struct CanvasView: UIViewRepresentable {
 // MARK: - View Modifiers
 
 public extension View {
+    /// Controls whether drawing input is accepted on the canvas.
+    ///
+    /// When set to `false`, the canvas becomes a read-only viewer.
+    ///
+    /// - Parameter enabled: A Boolean value that determines whether drawing is enabled.
+    func drawingEnabled(_ enabled: Bool) -> some View {
+        environment(\.canvasDrawingEnabled, enabled)
+    }
+
     /// Controls the visibility of the PencilKit tool picker.
     ///
     /// - Parameter visible: A Boolean value that determines whether the tool picker is visible.
