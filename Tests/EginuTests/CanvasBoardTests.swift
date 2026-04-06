@@ -103,12 +103,12 @@ struct CanvasBoardTests {
         #expect(canvas.strokes.count == 1)
     }
 
-    @Test("drawingBounds returns zero for empty drawing")
+    @Test("drawingBounds returns empty rect for empty drawing")
     @MainActor
     func testDrawingBoundsEmpty() {
         let canvas = CanvasBoard()
 
-        #expect(canvas.drawingBounds == .zero)
+        #expect(canvas.drawingBounds.size == .zero)
     }
 
     @Test("transformDrawing applies transform")
