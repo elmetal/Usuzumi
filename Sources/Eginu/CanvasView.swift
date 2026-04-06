@@ -14,6 +14,8 @@ extension EnvironmentValues {
     @Entry var onCanvasFinishRendering: (@MainActor @Sendable () -> Void)? = nil
     @Entry var canvasShowsDrawingPolicyControls: Bool = true
     @Entry var canvasToolPickerAutosaveName: String? = nil
+    @Entry var canvasToolPickerColorUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
+    @Entry var canvasToolPickerOverrideUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
 }
 
 // MARK: - CanvasView
@@ -74,6 +76,8 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.onCanvasFinishRendering) private var onFinishRendering
     @Environment(\.canvasShowsDrawingPolicyControls) private var showsDrawingPolicyControls
     @Environment(\.canvasToolPickerAutosaveName) private var toolPickerAutosaveName
+    @Environment(\.canvasToolPickerColorUserInterfaceStyle) private var toolPickerColorStyle
+    @Environment(\.canvasToolPickerOverrideUserInterfaceStyle) private var toolPickerOverrideStyle
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -143,6 +147,8 @@ public struct CanvasView: UIViewRepresentable {
 
         context.coordinator.toolPicker?.showsDrawingPolicyControls = showsDrawingPolicyControls
         context.coordinator.toolPicker?.stateAutosaveName = toolPickerAutosaveName
+        context.coordinator.toolPicker?.colorUserInterfaceStyle = toolPickerColorStyle
+        context.coordinator.toolPicker?.overrideUserInterfaceStyle = toolPickerOverrideStyle
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -170,6 +176,23 @@ public extension View {
     /// - Parameter name: A unique string to identify the saved state, or `nil` to disable autosave.
     func toolPickerAutosaveName(_ name: String?) -> some View {
         environment(\.canvasToolPickerAutosaveName, name)
+    }
+
+    /// Sets the user interface style used for the tool picker's color controls.
+    ///
+    /// Use this to force the tool picker's color well to render in a specific
+    /// appearance, regardless of the system setting.
+    ///
+    /// - Parameter style: The interface style to use for colors.
+    func toolPickerColorUserInterfaceStyle(_ style: UIUserInterfaceStyle) -> some View {
+        environment(\.canvasToolPickerColorUserInterfaceStyle, style)
+    }
+
+    /// Overrides the user interface style for the entire tool picker.
+    ///
+    /// - Parameter style: The interface style to use.
+    func toolPickerOverrideUserInterfaceStyle(_ style: UIUserInterfaceStyle) -> some View {
+        environment(\.canvasToolPickerOverrideUserInterfaceStyle, style)
     }
 
     /// Controls whether the tool picker shows the drawing policy controls.
