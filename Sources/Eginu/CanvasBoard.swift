@@ -25,6 +25,8 @@ import PencilKit
 /// ### Drawing Operations
 /// - ``strokes``
 /// - ``drawingBounds``
+/// - ``requiredContentVersion``
+/// - ``setDrawing(strokes:)``
 /// - ``transformDrawing(using:)``
 /// - ``appendDrawing(_:)``
 /// - ``appendStrokes(_:)``
@@ -148,6 +150,19 @@ public final class CanvasBoard {
     public var drawingBounds: CGRect {
         syncDrawingFromCanvas()
         return drawing.bounds
+    }
+
+    /// The PencilKit content version required to render the current drawing.
+    public var requiredContentVersion: PKContentVersion {
+        syncDrawingFromCanvas()
+        return drawing.requiredContentVersion
+    }
+
+    /// Replaces the current drawing with one constructed from the given strokes.
+    ///
+    /// - Parameter strokes: The strokes to use for the new drawing.
+    public func setDrawing(strokes: [PKStroke]) {
+        applyDrawing { $0 = PKDrawing(strokes: strokes) }
     }
 
     /// Applies an affine transform to the current drawing.
