@@ -53,7 +53,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | `selectedTool` | ✓ | ``CanvasBoard/currentTool`` (auto-sync) |
 | `isRulerActive` | ✓ | Auto-sync with `CanvasView.rulerActive(_:)` |
 | `showsDrawingPolicyControls` | ✓ | `CanvasView.showsDrawingPolicyControls(_:)` |
-| `stateAutosaveName` | — | — |
+| `stateAutosaveName` | ✓ | `CanvasView.toolPickerAutosaveName(_:)` |
 | `colorUserInterfaceStyle` | — | — |
 | `overrideUserInterfaceStyle` | — | — |
 | `init(toolItems:)` (iOS 18) | — | — |

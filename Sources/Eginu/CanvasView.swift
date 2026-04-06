@@ -13,6 +13,7 @@ extension EnvironmentValues {
     @Entry var onCanvasScroll: (@MainActor @Sendable (CGPoint) -> Void)? = nil
     @Entry var onCanvasFinishRendering: (@MainActor @Sendable () -> Void)? = nil
     @Entry var canvasShowsDrawingPolicyControls: Bool = true
+    @Entry var canvasToolPickerAutosaveName: String? = nil
 }
 
 // MARK: - CanvasView
@@ -72,6 +73,7 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.onCanvasScroll) private var onScroll
     @Environment(\.onCanvasFinishRendering) private var onFinishRendering
     @Environment(\.canvasShowsDrawingPolicyControls) private var showsDrawingPolicyControls
+    @Environment(\.canvasToolPickerAutosaveName) private var toolPickerAutosaveName
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -137,6 +139,7 @@ public struct CanvasView: UIViewRepresentable {
         }
 
         context.coordinator.toolPicker?.showsDrawingPolicyControls = showsDrawingPolicyControls
+        context.coordinator.toolPicker?.stateAutosaveName = toolPickerAutosaveName
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -154,6 +157,16 @@ public extension View {
     /// - Parameter enabled: A Boolean value that determines whether drawing is enabled.
     func drawingEnabled(_ enabled: Bool) -> some View {
         environment(\.canvasDrawingEnabled, enabled)
+    }
+
+    /// Sets the autosave name for the tool picker's state.
+    ///
+    /// When set, the tool picker automatically persists and restores its
+    /// selection state (tool, color, width) across app launches.
+    ///
+    /// - Parameter name: A unique string to identify the saved state, or `nil` to disable autosave.
+    func toolPickerAutosaveName(_ name: String?) -> some View {
+        environment(\.canvasToolPickerAutosaveName, name)
     }
 
     /// Controls whether the tool picker shows the drawing policy controls.
