@@ -18,6 +18,9 @@ extension EnvironmentValues {
     @Entry var canvasToolPickerOverrideUserInterfaceStyle: UIUserInterfaceStyle = .unspecified
     @Entry var onCanvasToolPickerVisibilityChange: (@MainActor @Sendable (Bool) -> Void)? = nil
     @Entry var onCanvasToolPickerFramesObscuredChange: (@MainActor @Sendable (CGRect) -> Void)? = nil
+    @Entry var canvasToolPickerItems: [PKToolPickerItem]? = nil
+    @Entry var canvasToolPickerAccessoryItem: UIBarButtonItem? = nil
+    @Entry var onCanvasToolPickerSelectedItemChange: (@MainActor @Sendable (PKToolPickerItem?) -> Void)? = nil
 }
 
 // MARK: - CanvasView
@@ -82,6 +85,9 @@ public struct CanvasView: UIViewRepresentable {
     @Environment(\.canvasToolPickerOverrideUserInterfaceStyle) private var toolPickerOverrideStyle
     @Environment(\.onCanvasToolPickerVisibilityChange) private var onToolPickerVisibilityChange
     @Environment(\.onCanvasToolPickerFramesObscuredChange) private var onToolPickerFramesObscuredChange
+    @Environment(\.canvasToolPickerItems) private var toolPickerItems
+    @Environment(\.canvasToolPickerAccessoryItem) private var toolPickerAccessoryItem
+    @Environment(\.onCanvasToolPickerSelectedItemChange) private var onToolPickerSelectedItemChange
 
     /// Creates a new canvas view with a default canvas board.
     ///
@@ -126,7 +132,7 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.canvas = canvas
 
         if isToolPickerVisible {
-            context.coordinator.showToolPicker(for: canvasView)
+            context.coordinator.showToolPicker(for: canvasView, toolItems: toolPickerItems)
         }
 
         return canvasView
@@ -142,10 +148,18 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.onZoom = onZoom
         context.coordinator.onScroll = onScroll
         context.coordinator.onFinishRendering = onFinishRendering
+        context.coordinator.onToolPickerVisibilityChange = onToolPickerVisibilityChange
+        context.coordinator.onToolPickerFramesObscuredChange = onToolPickerFramesObscuredChange
+        context.coordinator.onToolPickerSelectedItemChange = onToolPickerSelectedItemChange
 
-        if isToolPickerVisible && context.coordinator.toolPicker == nil {
-            context.coordinator.showToolPicker(for: canvasView)
-        } else if !isToolPickerVisible && context.coordinator.toolPicker != nil {
+        if isToolPickerVisible {
+            if context.coordinator.toolPicker == nil {
+                context.coordinator.showToolPicker(for: canvasView, toolItems: toolPickerItems)
+            } else if context.coordinator.toolItemsNeedRecreation(toolPickerItems) {
+                context.coordinator.hideToolPicker()
+                context.coordinator.showToolPicker(for: canvasView, toolItems: toolPickerItems)
+            }
+        } else if context.coordinator.toolPicker != nil {
             context.coordinator.hideToolPicker()
         }
 
@@ -153,8 +167,7 @@ public struct CanvasView: UIViewRepresentable {
         context.coordinator.toolPicker?.stateAutosaveName = toolPickerAutosaveName
         context.coordinator.toolPicker?.colorUserInterfaceStyle = toolPickerColorStyle
         context.coordinator.toolPicker?.overrideUserInterfaceStyle = toolPickerOverrideStyle
-        context.coordinator.onToolPickerVisibilityChange = onToolPickerVisibilityChange
-        context.coordinator.onToolPickerFramesObscuredChange = onToolPickerFramesObscuredChange
+        context.coordinator.toolPicker?.accessoryItem = toolPickerAccessoryItem
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -278,5 +291,31 @@ public extension View {
     /// - Parameter action: A closure called with the obscured rect in the canvas view's coordinate space.
     func onToolPickerFramesObscuredChange(_ action: @MainActor @Sendable @escaping (CGRect) -> Void) -> some View {
         environment(\.onCanvasToolPickerFramesObscuredChange, action)
+    }
+
+    /// Configures the tool picker with a custom set of tool items.
+    ///
+    /// When provided, the tool picker displays only the specified items
+    /// instead of the default system palette.
+    ///
+    /// - Parameter items: The tool picker items to display.
+    func toolPickerItems(_ items: [PKToolPickerItem]) -> some View {
+        environment(\.canvasToolPickerItems, items)
+    }
+
+    /// Sets an accessory bar button item on the tool picker.
+    ///
+    /// The accessory item is displayed in expanded configurations of the tool picker.
+    ///
+    /// - Parameter item: The bar button item to display, or `nil` to remove.
+    func toolPickerAccessoryItem(_ item: UIBarButtonItem?) -> some View {
+        environment(\.canvasToolPickerAccessoryItem, item)
+    }
+
+    /// Adds an action to perform when the tool picker's selected item changes.
+    ///
+    /// - Parameter action: A closure called with the newly selected tool picker item.
+    func onToolPickerSelectedItemChange(_ action: @MainActor @Sendable @escaping (PKToolPickerItem?) -> Void) -> some View {
+        environment(\.onCanvasToolPickerSelectedItemChange, action)
     }
 }

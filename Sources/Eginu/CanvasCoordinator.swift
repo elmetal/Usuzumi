@@ -16,7 +16,9 @@ extension CanvasView {
         var onFinishRendering: (@MainActor @Sendable () -> Void)?
         var onToolPickerVisibilityChange: (@MainActor @Sendable (Bool) -> Void)?
         var onToolPickerFramesObscuredChange: (@MainActor @Sendable (CGRect) -> Void)?
+        var onToolPickerSelectedItemChange: (@MainActor @Sendable (PKToolPickerItem?) -> Void)?
         private(set) var toolPicker: PKToolPicker?
+        private(set) var configuredToolItemIdentifiers: [String]?
         private var lastContentOffset: CGPoint = .zero
         private var lastZoomScale: CGFloat = 1.0
 
@@ -24,16 +26,25 @@ extension CanvasView {
             super.init()
         }
 
-        func showToolPicker(for canvasView: PKCanvasView) {
+        func showToolPicker(for canvasView: PKCanvasView, toolItems: [PKToolPickerItem]? = nil) {
             guard toolPicker == nil else { return }
 
-            let picker = PKToolPicker()
+            let picker: PKToolPicker
+            if let toolItems {
+                picker = PKToolPicker(toolItems: toolItems)
+                configuredToolItemIdentifiers = toolItems.map(\.identifier)
+            } else {
+                picker = PKToolPicker()
+                configuredToolItemIdentifiers = nil
+            }
+
             picker.setVisible(true, forFirstResponder: canvasView)
             picker.addObserver(canvasView)
             picker.addObserver(self)
             canvasView.becomeFirstResponder()
 
             toolPicker = picker
+            canvas?.syncToolPickerState(from: picker)
         }
 
         func hideToolPicker() {
@@ -45,6 +56,16 @@ extension CanvasView {
             picker.removeObserver(self)
 
             toolPicker = nil
+            configuredToolItemIdentifiers = nil
+            canvas?.syncToolPickerState(from: nil)
+        }
+
+        func toolItemsNeedRecreation(_ newItems: [PKToolPickerItem]?) -> Bool {
+            let newCount = newItems?.count
+            let oldCount = configuredToolItemIdentifiers?.count
+            guard newCount == oldCount else { return true }
+            let newIdentifiers = newItems?.map(\.identifier)
+            return newIdentifiers != configuredToolItemIdentifiers
         }
     }
 }
@@ -86,8 +107,19 @@ extension CanvasView.Coordinator: PKCanvasViewDelegate {
 }
 
 extension CanvasView.Coordinator: PKToolPickerObserver {
-    public func toolPickerSelectedToolDidChange(_ toolPicker: PKToolPicker) {
-        canvas?.setToolFromPicker(toolPicker.selectedTool)
+    public func toolPickerSelectedToolItemDidChange(_ toolPicker: PKToolPicker) {
+        let item = toolPicker.selectedToolItem
+        canvas?.setSelectedToolPickerItem(item)
+
+        if let inkingItem = item as? PKToolPickerInkingItem {
+            canvas?.setToolFromPicker(inkingItem.inkingTool)
+        } else if let eraserItem = item as? PKToolPickerEraserItem {
+            canvas?.setToolFromPicker(eraserItem.eraserTool)
+        } else if let lassoItem = item as? PKToolPickerLassoItem {
+            canvas?.setToolFromPicker(lassoItem.lassoTool)
+        }
+
+        onToolPickerSelectedItemChange?(item)
     }
 
     public func toolPickerIsRulerActiveDidChange(_ toolPicker: PKToolPicker) {

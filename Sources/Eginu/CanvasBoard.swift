@@ -35,6 +35,11 @@ import PencilKit
 /// - ``currentTool``
 /// - ``setTool(_:)``
 ///
+/// ### Tool Picker State
+/// - ``selectedToolPickerItem``
+/// - ``toolPickerItems``
+/// - ``selectToolPickerItem(_:)``
+///
 /// ### Undo and Redo
 /// - ``canUndo``
 /// - ``canRedo``
@@ -55,11 +60,16 @@ public final class CanvasBoard {
     public private(set) var canRedo: Bool = false
     /// The current drawing tool.
     public private(set) var currentTool: Tool = .pen(color: .black, width: 5)
+    /// The currently selected tool picker item, if a tool picker is active.
+    public private(set) var selectedToolPickerItem: PKToolPickerItem?
+    /// The tool items currently displayed in the tool picker, or `nil` if no picker is active.
+    public private(set) var toolPickerItems: [PKToolPickerItem]?
 
     /// The configuration used to create this canvas board.
     public let configuration: Configuration
 
     @ObservationIgnored private weak var canvasView: PKCanvasView?
+    @ObservationIgnored private weak var toolPicker: PKToolPicker?
     @ObservationIgnored private var drawing: PKDrawing = PKDrawing()
 
     /// Creates a new canvas board instance with the specified configuration.
@@ -194,18 +204,33 @@ public final class CanvasBoard {
         applyDrawing { $0 = $0.appending(PKDrawing(strokes: strokes)) }
     }
 
+    /// The gesture recognizer used for drawing input.
+    ///
+    /// Use this to coordinate the drawing gesture with other gesture recognizers,
+    /// for example by calling `require(toFail:)` on another recognizer.
+    public var drawingGestureRecognizer: UIGestureRecognizer? {
+        canvasView?.drawingGestureRecognizer
+    }
+
     /// Sets the active drawing tool.
     ///
     /// - Parameter tool: The drawing tool to activate.
     public func setTool(_ tool: Tool) {
         currentTool = tool
-        canvasView?.tool = tool.pkTool
-
         if case .ruler = tool {
             canvasView?.isRulerActive = true
         } else {
             canvasView?.isRulerActive = false
+            canvasView?.tool = tool.pkTool
         }
+    }
+
+    /// Selects the specified tool picker item in the active tool picker.
+    ///
+    /// This has no effect if no tool picker is currently active.
+    public func selectToolPickerItem(_ item: PKToolPickerItem) {
+        toolPicker?.selectedToolItem = item
+        selectedToolPickerItem = item
     }
 
     // MARK: - Internal (Coordinator access)
@@ -243,12 +268,25 @@ public final class CanvasBoard {
         self.isDrawing = isDrawing
     }
 
-    func setToolFromPicker(_ tool: PKTool) {
-        canvasView?.tool = tool
+    func setToolFromPicker(_ pkTool: PKTool) {
+        if let tool = Tool(pkTool) {
+            currentTool = tool
+        }
+        canvasView?.tool = pkTool
     }
 
     func setRulerFromPicker(_ active: Bool) {
         canvasView?.isRulerActive = active
+    }
+
+    func syncToolPickerState(from picker: PKToolPicker?) {
+        toolPicker = picker
+        toolPickerItems = picker?.toolItems
+        selectedToolPickerItem = picker?.selectedToolItem
+    }
+
+    func setSelectedToolPickerItem(_ item: PKToolPickerItem?) {
+        selectedToolPickerItem = item
     }
 
     var boundCanvasView: PKCanvasView? {

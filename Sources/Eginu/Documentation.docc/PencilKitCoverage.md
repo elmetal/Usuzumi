@@ -17,7 +17,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | `isOpaque` | ✓ | ``CanvasBoard/Configuration/isOpaque`` |
 | `undoManager` | ✓ | ``CanvasBoard/undo()``, ``CanvasBoard/redo()``, ``CanvasBoard/canUndo``, ``CanvasBoard/canRedo`` |
 | `isDrawingEnabled` (iOS 18) | ✓ | `CanvasView.drawingEnabled(_:)` |
-| `drawingGestureRecognizer` | — | — |
+| `drawingGestureRecognizer` | ✓ | ``CanvasBoard/drawingGestureRecognizer`` |
 | `maximumSupportedContentVersion` (iOS 17) | ✓ | ``CanvasBoard/Configuration/maximumSupportedContentVersion`` |
 
 ## PKCanvasViewDelegate
@@ -56,20 +56,20 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 | `stateAutosaveName` | ✓ | `CanvasView.toolPickerAutosaveName(_:)` |
 | `colorUserInterfaceStyle` | ✓ | `CanvasView.toolPickerColorUserInterfaceStyle(_:)` |
 | `overrideUserInterfaceStyle` | ✓ | `CanvasView.toolPickerOverrideUserInterfaceStyle(_:)` |
-| `init(toolItems:)` (iOS 18) | — | — |
-| `selectedToolItem` (iOS 18) | — | — |
-| `toolItems` (iOS 18) | — | — |
-| `accessoryItem` (iOS 18) | — | — |
+| `init(toolItems:)` (iOS 18) | ✓ | `CanvasView.toolPickerItems(_:)` |
+| `selectedToolItem` (iOS 18) | ✓ | ``CanvasBoard/selectedToolPickerItem``, ``CanvasBoard/selectToolPickerItem(_:)`` |
+| `toolItems` (iOS 18) | ✓ | ``CanvasBoard/toolPickerItems`` |
+| `accessoryItem` (iOS 18) | ✓ | `CanvasView.toolPickerAccessoryItem(_:)` |
 
 ## PKToolPickerObserver
 
 | Method | Status | Eginu API |
 |---|---|---|
-| `toolPickerSelectedToolDidChange(_:)` | ✓ | ``CanvasBoard/currentTool`` (auto-sync) |
+| `toolPickerSelectedToolDidChange(_:)` (deprecated) | ✓ | ``CanvasBoard/currentTool`` (auto-sync) |
 | `toolPickerIsRulerActiveDidChange(_:)` | ✓ | Auto-sync with `CanvasView.rulerActive(_:)` |
 | `toolPickerVisibilityDidChange(_:)` | ✓ | `CanvasView.onToolPickerVisibilityChange(_:)` |
 | `toolPickerFramesObscuredDidChange(_:)` | ✓ | `CanvasView.onToolPickerFramesObscuredChange(_:)` |
-| `toolPickerSelectedToolItemDidChange(_:)` (iOS 18) | — | — |
+| `toolPickerSelectedToolItemDidChange(_:)` (iOS 18) | ✓ | `CanvasView.onToolPickerSelectedItemChange(_:)` |
 
 ## Tool Types
 
@@ -79,7 +79,7 @@ A summary of which PencilKit APIs are covered by Eginu and which are not yet sup
 |---|---|---|
 | Ink types: pen, pencil, marker, crayon, watercolor, monoline, fountainPen | ✓ | ``CanvasBoard/Tool`` |
 | `color` / `width` | ✓ | Associated values on each ``CanvasBoard/Tool`` case |
-| `defaultWidth(for:)` / `minimumWidth(for:)` / `maximumWidth(for:)` | — | — |
+| `defaultWidth` / `validWidthRange` | — | Use `PKInk.InkType` directly (e.g. `.pen.defaultWidth`, `.pen.validWidthRange`) |
 | `convertColor(_:from:to:)` | — | — |
 
 ### PKEraserTool

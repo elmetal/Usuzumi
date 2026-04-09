@@ -144,6 +144,42 @@ extension CanvasBoard {
     }
 }
 
+// MARK: - PencilKit Conversion
+
+public extension CanvasBoard.Tool {
+    /// Creates a Tool from a PencilKit tool, or returns nil for unrecognized tools.
+    init?(_ pkTool: PKTool) {
+        switch pkTool {
+        case let inking as PKInkingTool:
+            let color = Color(inking.color)
+            let width = inking.width
+            switch inking.inkType {
+            case .pen:          self = .pen(color: color, width: width)
+            case .pencil:       self = .pencil(color: color, width: width)
+            case .marker:       self = .marker(color: color, width: width)
+            case .crayon:       self = .crayon(color: color, width: width)
+            case .watercolor:   self = .watercolor(color: color, width: width)
+            case .monoline:     self = .monoline(color: color, width: width)
+            case .fountainPen:  self = .fountainPen(color: color, width: width)
+            @unknown default:   return nil
+            }
+        case let eraser as PKEraserTool:
+            let eraserType: EraserType
+            switch eraser.eraserType {
+            case .vector:           eraserType = .vector
+            case .bitmap:           eraserType = .bitmap
+            case .fixedWidthBitmap: eraserType = .fixedWidthBitmap
+            @unknown default:       return nil
+            }
+            self = .eraser(type: eraserType, width: eraser.width)
+        case is PKLassoTool:
+            self = .lasso
+        default:
+            return nil
+        }
+    }
+}
+
 // MARK: - Convenience Initializers
 public extension CanvasBoard.Tool {
     /// Creates a pen tool with the specified color and width.

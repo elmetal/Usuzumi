@@ -44,23 +44,25 @@ struct CoordinatorTests {
         #expect(coordinator.toolPicker == nil)
     }
 
-    @Test("Tool picker selected tool change updates canvas view")
-    func testToolPickerSelectedToolChange() {
+    @Test("Tool picker selected item change invokes callback")
+    func testToolPickerSelectedItemChangeCallback() {
         let coordinator = CanvasView.Coordinator()
         let canvas = CanvasBoard()
         let canvasView = PKCanvasView()
-        let toolPicker = PKToolPicker()
 
         coordinator.canvas = canvas
         canvas.bind(to: canvasView)
 
-        let newTool = PKInkingTool(.pencil, color: .red, width: 10)
-        toolPicker.selectedTool = newTool
+        var callbackFired = false
+        coordinator.onToolPickerSelectedItemChange = { _ in callbackFired = true }
 
-        coordinator.toolPickerSelectedToolDidChange(toolPicker)
+        let toolPicker = PKToolPicker()
+        toolPicker.setVisible(true, forFirstResponder: canvasView)
+        toolPicker.addObserver(coordinator)
 
-        // The PKToolPicker directly sets the tool on the PKCanvasView
-        #expect(canvasView.tool is PKInkingTool)
+        coordinator.toolPickerSelectedToolItemDidChange(toolPicker)
+
+        #expect(callbackFired)
     }
 
     @Test("Drawing change callback is invoked")

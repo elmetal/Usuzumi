@@ -225,4 +225,60 @@ struct CanvasBoardTests {
         #expect(tool.name == "Eraser (fixedWidthBitmap)")
         #expect(tool.pkTool is PKEraserTool)
     }
+
+    // MARK: - Tool Round-Trip (PKTool → Tool)
+
+    @Test("Tool.init from PKInkingTool round-trips for pen")
+    @MainActor
+    func testToolFromPKInkingToolPen() {
+        let pkTool = PKInkingTool(.pen, color: .red, width: 7)
+        let tool = CanvasBoard.Tool(pkTool)
+
+        #expect(tool != nil)
+        if case .pen(_, let width) = tool {
+            #expect(width == 7)
+        } else {
+            Issue.record("Expected .pen case")
+        }
+    }
+
+    @Test("Tool.init from PKEraserTool round-trips")
+    @MainActor
+    func testToolFromPKEraserTool() {
+        let pkTool = PKEraserTool(.vector)
+        let tool = CanvasBoard.Tool(pkTool)
+
+        #expect(tool != nil)
+        if case .eraser(let type, _) = tool {
+            #expect(type == .vector)
+        } else {
+            Issue.record("Expected .eraser case")
+        }
+    }
+
+    @Test("Tool.init from PKLassoTool returns .lasso")
+    @MainActor
+    func testToolFromPKLassoTool() {
+        let pkTool = PKLassoTool()
+        let tool = CanvasBoard.Tool(pkTool)
+
+        #expect(tool == .lasso)
+    }
+
+    @Test("setToolFromPicker updates currentTool")
+    @MainActor
+    func testSetToolFromPickerUpdatesCurrentTool() {
+        let canvas = CanvasBoard()
+        let canvasView = PKCanvasView()
+        canvas.bind(to: canvasView)
+
+        let pkTool = PKInkingTool(.marker, color: .blue, width: 15)
+        canvas.setToolFromPicker(pkTool)
+
+        if case .marker(_, let width) = canvas.currentTool {
+            #expect(width == 15)
+        } else {
+            Issue.record("Expected .marker case, got \(canvas.currentTool)")
+        }
+    }
 }
